@@ -26,9 +26,12 @@ def import_and_predict(image_data, model):
         print(f"Error in import_and_predict: {e}")
         return None
 
+current_directory = os.path.dirname(os.path.abspath(__file__))
+temp_data_path = os.path.join(current_directory, 'my_model.hdf5')
+
 
 try:
-    model = tf.keras.models.load_model(r'C:\Python\ciot\my_model.hdf5')
+    model = tf.keras.models.load_model(r'C:\Python\AIHealthAdvisor\my_model.hdf5')
 except Exception as e:
     print(f"Error loading model: {e}")
     sys.exit(1)

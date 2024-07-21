@@ -19,7 +19,10 @@ def import_and_predict(image_data, model):
     prediction = model.predict(img_reshape)
     return prediction
 
-model = tf.keras.models.load_model(r'C:\Python\ciot\my_model.hdf5')  # Use raw string to handle backslashes
+current_directory = os.path.dirname(os.path.abspath(__file__))
+temp_data_path = os.path.join(current_directory, 'my_model.hdf5')
+
+model = tf.keras.models.load_model(r'C:\Python\AIHealthAdvisor\my_model.hdf5')  # Use raw string to handle backslashes
 
 cap = cv2.VideoCapture(0)  # Open the default camera
 

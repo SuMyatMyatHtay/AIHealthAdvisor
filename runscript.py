@@ -1,8 +1,11 @@
+import os
 import subprocess
 
+current_directory = os.path.dirname(os.path.abspath(__file__))
+print(f"current_directory values: {current_directory}")
 # Paths to your scripts
-streamlit_script = "C:\python\CIOT\streamlit.py"
-facedetect_script = "C:\python\ciot/faceDetect.py"
+streamlit_script = current_directory + "/streamlit.py"
+facedetect_script = current_directory + "/faceDetect.py"
 
 # Run Streamlit script
 streamlit_process = subprocess.Popen(["streamlit", "run", streamlit_script])

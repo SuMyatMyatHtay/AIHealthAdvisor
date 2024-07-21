@@ -80,11 +80,11 @@ def main_page():
     if st.button("Logout"):
         delete_user_id()
         st.session_state.page = "login"
-        st.experimental_rerun()
+        st.rerun()
 
     if st.button("Sleep Optimization"):
         st.session_state.page = "sleep"
-        st.experimental_rerun()
+        st.rerun()
 
 # Function to handle the sleep optimization page
 def sleep_optimization_page():
@@ -92,7 +92,7 @@ def sleep_optimization_page():
     st.write("Welcome to the sleep optimization page!")
     if st.button("Go to Main Page"):
         st.session_state.page = "main"
-        st.experimental_rerun()
+        st.rerun()
 
 # Function to extract the value of the 'page' query parameter
 def get_page_query_param():
@@ -113,7 +113,7 @@ if user_id:
         sleep_optimization_page()
     else:
         st.session_state.page = "main"
-        st.experimental_rerun()
+        st.rerun()
 else:
     # Create login and register tabs
     tabs = st.tabs(["Login", "Register"])
@@ -128,7 +128,7 @@ else:
                 save_user_id(user_id)
                 st.success("Login successful!")
                 st.session_state.page = "main"
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("Invalid username or password")
 
