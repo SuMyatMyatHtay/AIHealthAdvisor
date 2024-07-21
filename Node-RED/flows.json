@@ -1,0 +1,407 @@
+[
+    {
+        "id": "1e08c4aa724aa94a",
+        "type": "exec",
+        "z": "81892e02e6a9ac33",
+        "command": "python3 -u",
+        "addpay": "",
+        "append": "C:\\python\\ciot\\ciot_detect.py",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Run Detector",
+        "x": 310,
+        "y": 80,
+        "wires": [
+            [
+                "ccb6f3f1b450eee7",
+                "e6a62a5d747c6944",
+                "f1b64aaaf6e971de",
+                "25dc29accc4d999a"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "48e163b7789cea0f",
+        "type": "inject",
+        "z": "81892e02e6a9ac33",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 80,
+        "wires": [
+            [
+                "1e08c4aa724aa94a"
+            ]
+        ]
+    },
+    {
+        "id": "ccb6f3f1b450eee7",
+        "type": "debug",
+        "z": "81892e02e6a9ac33",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e6a62a5d747c6944",
+        "type": "ui_text",
+        "z": "81892e02e6a9ac33",
+        "group": "c15b664687299b5e",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Detected Person",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 610,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f1b64aaaf6e971de",
+        "type": "switch",
+        "z": "81892e02e6a9ac33",
+        "name": "Check Person Unknown Person",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Andy",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Joe",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Unknown",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [],
+            [],
+            [
+                "e5470cc019ec2553"
+            ]
+        ]
+    },
+    {
+        "id": "484f4969e7d8b025",
+        "type": "trigger",
+        "z": "81892e02e6a9ac33",
+        "name": "Wait 10 mins",
+        "op1": "",
+        "op2": "0",
+        "op1type": "pay",
+        "op2type": "str",
+        "duration": "10",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 970,
+        "y": 80,
+        "wires": [
+            [
+                "9750482ce0dae466"
+            ]
+        ]
+    },
+    {
+        "id": "9750482ce0dae466",
+        "type": "e-mail",
+        "z": "81892e02e6a9ac33",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "joe_yang86@live.com",
+        "dname": "Send Email",
+        "x": 1110,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "e5470cc019ec2553",
+        "type": "function",
+        "z": "81892e02e6a9ac33",
+        "name": "Prepare email alert",
+        "func": "msg.topic=\"Intruder Alert\";\nmsg.payload=\"IntruderDetected\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 160,
+        "wires": [
+            [
+                "484f4969e7d8b025"
+            ]
+        ]
+    },
+    {
+        "id": "78b2a02b981f8ca9",
+        "type": "mysql",
+        "z": "81892e02e6a9ac33",
+        "mydb": "2453f6a8c0a6977a",
+        "name": "MySQL Database Configuration",
+        "x": 1110,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "25dc29accc4d999a",
+        "type": "function",
+        "z": "81892e02e6a9ac33",
+        "name": "Get Detected Person and Send to MySQL",
+        "func": "msg.topic=\"INSERT INTO sensor (sensor, value) values ('camera', \"+msg.payload+\")\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 220,
+        "wires": [
+            [
+                "753675bde0b1f34e"
+            ]
+        ]
+    },
+    {
+        "id": "753675bde0b1f34e",
+        "type": "trigger",
+        "z": "81892e02e6a9ac33",
+        "name": "Wait 5 seconds",
+        "op1": "",
+        "op2": "0",
+        "op1type": "pay",
+        "op2type": "str",
+        "duration": "5",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 860,
+        "y": 220,
+        "wires": [
+            [
+                "78b2a02b981f8ca9"
+            ]
+        ]
+    },
+    {
+        "id": "6aa70ec0.23d8b",
+        "type": "inject",
+        "z": "81892e02e6a9ac33",
+        "name": "Every 1 sec",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 380,
+        "wires": [
+            [
+                "f9b15f7a.16f9"
+            ]
+        ]
+    },
+    {
+        "id": "f9b15f7a.16f9",
+        "type": "function",
+        "z": "81892e02e6a9ac33",
+        "name": " rpi-dht22 simulate",
+        "func": "function getRandomInt(min, max) {\n  min = Math.ceil(min);\n  max = Math.floor(max);\n  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive\n}\n\nmsg.payload = getRandomInt(20, 30); //get temperature reading\nmsg.humidity = getRandomInt(40, 80); //get humidity reading\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 190,
+        "y": 260,
+        "wires": [
+            [
+                "84e38aa7.1d1fd8",
+                "22ce648d.ec1d2c",
+                "93248f93045673a5"
+            ]
+        ]
+    },
+    {
+        "id": "22ce648d.ec1d2c",
+        "type": "ui_gauge",
+        "z": "81892e02e6a9ac33",
+        "name": "Temperature Gauge",
+        "group": "c15b664687299b5e",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature Gauge",
+        "label": "degreeC",
+        "format": "{{msg.payload}}",
+        "min": "20",
+        "max": "30",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "24",
+        "seg2": "28",
+        "x": 540,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "84e38aa7.1d1fd8",
+        "type": "ui_gauge",
+        "z": "81892e02e6a9ac33",
+        "name": "Humidity Gauge",
+        "group": "c15b664687299b5e",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity Gauge",
+        "label": "%",
+        "format": "{{msg.humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "50",
+        "seg2": "80",
+        "x": 540,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "ce14c87e33f6ef0b",
+        "type": "thingspeak42",
+        "z": "81892e02e6a9ac33",
+        "name": "Send to Thingspeak",
+        "delay": "15",
+        "topic1": "Temperature",
+        "topic2": "Humidity",
+        "topic3": "",
+        "topic4": "",
+        "topic5": "",
+        "topic6": "",
+        "topic7": "",
+        "topic8": "",
+        "endpoint": "https://thingspeak.com",
+        "x": 720,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "93248f93045673a5",
+        "type": "function",
+        "z": "81892e02e6a9ac33",
+        "name": "Prepare sending data to ThingSpeak",
+        "func": "var temp = {\ntopic: \"Temperature\",\npayload: msg.payload\n};\nvar humi = {\ntopic: \"Humidity\",\npayload: msg.humidity\n};\nreturn [[temp,humi]];",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 420,
+        "wires": [
+            [
+                "ce14c87e33f6ef0b"
+            ]
+        ]
+    },
+    {
+        "id": "c15b664687299b5e",
+        "type": "ui_group",
+        "name": "Default",
+        "tab": "a93e668a1c0fc918",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "2453f6a8c0a6977a",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "ep0403",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "a93e668a1c0fc918",
+        "type": "ui_tab",
+        "name": "Smart Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
