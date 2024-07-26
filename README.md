@@ -33,6 +33,10 @@ pages folder => different pages streamlit files
 datasets folder => pictures to train the model for the face recognition
 Node-RED => exported Node Red flow.
 
+# Bugs Left to Fix
+
+- Login button needs to click twice to login
+
 # Minor Flag Outs
 
 - This version haven't tested out yet for the Node-RED so please ignore the Node-RED folder for now.
