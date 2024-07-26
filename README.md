@@ -6,9 +6,16 @@ streamlit run streamlit.py
 
 python runscript.py
 
+# How to set up (Su's Part)
+
+- run "python mysql_createdb.py"
+- inside the mysql, run the file which is under the "MySQL Database" folder
+- run "python ciot_app_model.py" file
+
 # What will be in next release
 
 - I will make the python file to install all the data and all the necessary thingys in one shot.
+- I will combine setup part in one shot (Sorry I lazy to do rn)
 - One main file to handle the database connection rather than putting details in everything.
 
 # The Database Info that we will be using
