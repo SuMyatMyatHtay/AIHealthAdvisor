@@ -27,7 +27,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `sensors`
 --
 
-CREATE TABLE `sensors` (
+CREATE TABLE `sensor` (
   `datetime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `sensor` text NOT NULL,
   `value` text NOT NULL
