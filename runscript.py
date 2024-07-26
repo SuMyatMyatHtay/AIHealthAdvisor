@@ -11,8 +11,8 @@ facedetect_script = current_directory + "/faceDetect.py"
 streamlit_process = subprocess.Popen(["streamlit", "run", streamlit_script])
 
 # Run test script
-# test_process = subprocess.Popen(["python", facedetect_script])
+test_process = subprocess.Popen(["python", facedetect_script])
 
 # Wait for both processes to complete
 streamlit_process.wait()
-# test_process.wait()
+test_process.wait()
