@@ -1,0 +1,841 @@
+[
+    {
+        "id": "e49c89f948ae1d6a",
+        "type": "tab",
+        "label": "Overall Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "598c335e9ceb6cd7",
+        "type": "exec",
+        "z": "e49c89f948ae1d6a",
+        "command": "streamlit run C:\\python\\AIHealthAdvisor\\app.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Run Detector",
+        "x": 330,
+        "y": 240,
+        "wires": [
+            [
+                "6c914cf06511c4f4",
+                "f93a066da8778a52"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d9a73a02eef01246",
+        "type": "inject",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 240,
+        "wires": [
+            [
+                "598c335e9ceb6cd7"
+            ]
+        ]
+    },
+    {
+        "id": "634d9b566f437a5a",
+        "type": "switch",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Sleep Page",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Nutrition Planner Page",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Nutrition Tracker Page",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "User Page",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 4,
+        "x": 710,
+        "y": 360,
+        "wires": [
+            [
+                "b378ad32a3df8eac",
+                "1d11ce42bb5b2c2c"
+            ],
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "6c914cf06511c4f4",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "f93a066da8778a52",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Trim Output",
+        "func": "msg.payload = msg.payload.trim();\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 300,
+        "wires": [
+            [
+                "634d9b566f437a5a"
+            ]
+        ]
+    },
+    {
+        "id": "e428c430ca87c146",
+        "type": "switch",
+        "z": "e49c89f948ae1d6a",
+        "name": "Check whether it is our user",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Correct User",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1400,
+        "y": 480,
+        "wires": [
+            [
+                "b55b994a69b527db",
+                "16d4b07c5751a244"
+            ]
+        ]
+    },
+    {
+        "id": "5d8e86f8e9c170b9",
+        "type": "mysql",
+        "z": "e49c89f948ae1d6a",
+        "mydb": "2453f6a8c0a6977a",
+        "name": "MySQL Database Configuration",
+        "x": 1990,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c44cdc5d06aceede",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Get Detected Person and Send to MySQL",
+        "func": "msg.topic = `INSERT INTO sensor (sensor, value) VALUES ('camera', '${msg.payload}')`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1240,
+        "y": 700,
+        "wires": [
+            [
+                "fd4500e458202d9b",
+                "c9bf726fc87f08b9"
+            ]
+        ]
+    },
+    {
+        "id": "fd4500e458202d9b",
+        "type": "trigger",
+        "z": "e49c89f948ae1d6a",
+        "name": "Wait 5 seconds",
+        "op1": "",
+        "op2": "0",
+        "op1type": "pay",
+        "op2type": "str",
+        "duration": "5",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1600,
+        "y": 620,
+        "wires": [
+            [
+                "5d8e86f8e9c170b9"
+            ]
+        ]
+    },
+    {
+        "id": "c9bf726fc87f08b9",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1590,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "b55b994a69b527db",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "draft email",
+        "func": "msg.topic = \"Face Detected\";\nmsg.payload = \"This is Su. Heehee\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1690,
+        "y": 480,
+        "wires": [
+            [
+                "e14ad1fedfe314fa",
+                "6dcf3bf6992f3e6e"
+            ]
+        ]
+    },
+    {
+        "id": "e14ad1fedfe314fa",
+        "type": "trigger",
+        "z": "e49c89f948ae1d6a",
+        "name": "without spamming",
+        "op1": "",
+        "op2": "",
+        "op1type": "pay",
+        "op2type": "nul",
+        "duration": "30",
+        "extend": true,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1970,
+        "y": 400,
+        "wires": [
+            [
+                "0a7c4b4b31afd9f9"
+            ]
+        ]
+    },
+    {
+        "id": "6dcf3bf6992f3e6e",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1900,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "3dba8cf5c73f9023",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Trim Output",
+        "func": "msg.payload = msg.payload.trim();\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 420,
+        "wires": [
+            [
+                "e428c430ca87c146"
+            ]
+        ]
+    },
+    {
+        "id": "0a7c4b4b31afd9f9",
+        "type": "e-mail",
+        "z": "e49c89f948ae1d6a",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "summh11@gmail.com",
+        "dname": "email humidity alert",
+        "x": 2170,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "b378ad32a3df8eac",
+        "type": "exec",
+        "z": "e49c89f948ae1d6a",
+        "command": "python -u C:\\python\\AIHealthAdvisor\\faceDetect.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Run Detector",
+        "x": 950,
+        "y": 320,
+        "wires": [
+            [
+                "3dba8cf5c73f9023",
+                "c44cdc5d06aceede"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "26dbaadaafe7961e",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": " rpi-dht22 simulate",
+        "func": "// Generate a random number between min and max\nvar minTemp = 20; // Change to your minimum value\nvar maxTemp = 30; // Change to your maximum value\nvar minHumi = 1;\nvar maxHumi = 100;\nmsg.payload = Math.floor(Math.random() * (maxTemp - minTemp + 1)) + minTemp;\nmsg.humidity = Math.floor(Math.random() * (maxHumi - minHumi + 1)) + minHumi;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 200,
+        "wires": [
+            [
+                "c9e6a29108994682",
+                "83ffdbe126d19d63",
+                "a6efb2440bc6f0c0",
+                "4df50b527e6b29b1",
+                "0ca65447aad07564",
+                "8fbb9d4017396729"
+            ]
+        ]
+    },
+    {
+        "id": "6616dbd59b897783",
+        "type": "thingspeak42",
+        "z": "e49c89f948ae1d6a",
+        "name": "Send to Thingspeak",
+        "delay": "15",
+        "topic1": "Temperature",
+        "topic2": "Humidity",
+        "topic3": "",
+        "topic4": "",
+        "topic5": "",
+        "topic6": "",
+        "topic7": "",
+        "topic8": "",
+        "endpoint": "https://thingspeak.com",
+        "x": 2080,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c9e6a29108994682",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Prepare sending data to ThingSpeak",
+        "func": "var temp = {\ntopic: \"Temperature\",\npayload: msg.payload\n};\nvar humi = {\ntopic: \"Humidity\",\npayload: msg.humidity\n};\nreturn [[temp,humi]];",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1790,
+        "y": 160,
+        "wires": [
+            [
+                "6616dbd59b897783"
+            ]
+        ]
+    },
+    {
+        "id": "8777c029f05f731d",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "draft email",
+        "func": "msg.topic = \"Humidity alert\";\nmsg.payload = \"ALERT Humidity exceed 60%. Humidity levls are too high.\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1710,
+        "y": 400,
+        "wires": [
+            [
+                "e14ad1fedfe314fa"
+            ]
+        ]
+    },
+    {
+        "id": "58d2073bec05335a",
+        "type": "switch",
+        "z": "e49c89f948ae1d6a",
+        "name": "if humidity exceeds threshols",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "60",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1480,
+        "y": 400,
+        "wires": [
+            [
+                "8777c029f05f731d"
+            ]
+        ]
+    },
+    {
+        "id": "0ca65447aad07564",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "extract humidity",
+        "func": "msg.payload = msg.humidity;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1440,
+        "y": 280,
+        "wires": [
+            [
+                "58d2073bec05335a",
+                "af691fb879574464",
+                "ee8bb8968e5adaf8",
+                "f7dd7b0af2701e96"
+            ]
+        ]
+    },
+    {
+        "id": "a6efb2440bc6f0c0",
+        "type": "ui_gauge",
+        "z": "e49c89f948ae1d6a",
+        "name": "send temp to gauge",
+        "group": "24e8daf4510613bb",
+        "order": 0,
+        "width": "6",
+        "height": "6",
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "deg C",
+        "format": "{{value}}",
+        "min": "21",
+        "max": "30",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "24",
+        "seg2": "27",
+        "diff": false,
+        "className": "",
+        "x": 1780,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "83ffdbe126d19d63",
+        "type": "ui_chart",
+        "z": "e49c89f948ae1d6a",
+        "name": "send temp to charts",
+        "group": "18c70613ccb3776a",
+        "order": 0,
+        "width": "6",
+        "height": "6",
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "21",
+        "ymax": "30",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1770,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4df50b527e6b29b1",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "send temp to debug window",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1800,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "af691fb879574464",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "send humi to debug window",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "humidity",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1740,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8fbb9d4017396729",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1480,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f7dd7b0af2701e96",
+        "type": "ui_chart",
+        "z": "e49c89f948ae1d6a",
+        "name": "sen humi to chart",
+        "group": "18c70613ccb3776a",
+        "order": 1,
+        "width": "6",
+        "height": "6",
+        "label": "Humidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "40",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1710,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ee8bb8968e5adaf8",
+        "type": "ui_gauge",
+        "z": "e49c89f948ae1d6a",
+        "name": "send humi to gauge",
+        "group": "24e8daf4510613bb",
+        "order": 1,
+        "width": "6",
+        "height": "6",
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "40",
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "60",
+        "seg2": "80",
+        "diff": false,
+        "className": "",
+        "x": 1710,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "16d4b07c5751a244",
+        "type": "change",
+        "z": "e49c89f948ae1d6a",
+        "name": "Set flow.sleepPageActive true",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sleepPageActive",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "x": 1570,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9f2b38e6cb3642bb",
+        "type": "switch",
+        "z": "e49c89f948ae1d6a",
+        "name": "Check flow.sleepPageActive",
+        "property": "sleepPageActive",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 820,
+        "y": 140,
+        "wires": [
+            [
+                "26dbaadaafe7961e"
+            ]
+        ]
+    },
+    {
+        "id": "c533e078689f4843",
+        "type": "change",
+        "z": "e49c89f948ae1d6a",
+        "name": "Set flow.sleepPageActive false",
+        "rules": [
+            {
+                "t": "set",
+                "p": "sleepPageActive",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "x": 970,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bd7721d11e75f2a0",
+        "type": "inject",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "30",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "9f2b38e6cb3642bb"
+            ]
+        ]
+    },
+    {
+        "id": "1d11ce42bb5b2c2c",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 880,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "2453f6a8c0a6977a",
+        "type": "MySQLdatabase",
+        "name": "",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "iot",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "24e8daf4510613bb",
+        "type": "ui_group",
+        "name": "Sensor Gauges",
+        "tab": "0216b1ccfb4c1339",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "18c70613ccb3776a",
+        "type": "ui_group",
+        "name": "Sensor Chart",
+        "tab": "0216b1ccfb4c1339",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0216b1ccfb4c1339",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
