@@ -1,1 +1,5 @@
-{"user_id": 3, "username": "test2"}
+{
+    "user_id": 4,
+    "username": "Su",
+    "faceDetect_duration": 1.165116024017334
+}

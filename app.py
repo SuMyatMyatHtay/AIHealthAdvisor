@@ -3,6 +3,7 @@ import os
 
 import pages.login_page as login
 import pages.home_page as home
+import pages.sleep_page as sleep
 import pages.nutrition_planner_page as nutrition_planner
 import pages.nutrition_tracker_page as nutrition_tracker
 import pages.user_page as user_planner
@@ -29,17 +30,22 @@ if os.path.exists(temp_data_path):
     # Navigation
     def main():
         st.sidebar.title("Navigation")
-        page = st.sidebar.radio("Go to", ["Login", "Home", "Nutrition Planner","Nutrition Tracker", "User Page"])
+        page = st.sidebar.radio("Go to", ["Home", "Sleep Optimization", "Nutrition Planner","Nutrition Tracker", "User Page"])
 
-        if page == "Login": 
-            login.login_page()
-        elif page == "Home":
+        
+        if page == "Home":
             home.home_page()
+        elif page == "Sleep Optimization": 
+            print("Sleep Page")
+            sleep.sleep_page()
         elif page == "Nutrition Planner":
+            print("Nutrition Planner Page")
             nutrition_planner.nutrition_planner_page()
         elif page == "Nutrition Tracker":
+            print("Nutrition Tracker Page")
             nutrition_tracker.nutrition_tracker_page()
         elif page == "User Page":
+            print("User Page")
             user_planner.user_page()
 
     if __name__ == "__main__":

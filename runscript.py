@@ -4,7 +4,7 @@ import subprocess
 current_directory = os.path.dirname(os.path.abspath(__file__))
 print(f"current_directory values: {current_directory}")
 # Paths to your scripts
-streamlit_script = current_directory + "/streamlit.py"
+streamlit_script = current_directory + "/app.py"
 facedetect_script = current_directory + "/faceDetect.py"
 
 # Run Streamlit script

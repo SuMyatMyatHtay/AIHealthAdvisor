@@ -4,6 +4,7 @@ import os
 import json
 import subprocess
 
+from datetime import datetime
 from mysql.connector import Error
 
 import pages.faceupload_page as faceupload
@@ -16,6 +17,18 @@ parent_directory = os.path.dirname(current_directory)
 temp_data_path = os.path.join(parent_directory, 'tempData.json')
 
 facedetect_script = os.path.join(parent_directory, "faceDetect.py")
+
+start_sleep_time = ""
+end_sleep_time = ""
+facedetect_duration = 0 
+sleep_duration = 0 
+
+def load_faceDetect_duration():
+    if os.path.exists(temp_data_path):
+        with open(temp_data_path, 'r') as f:
+            data = json.load(f)
+            return data.get("faceDetect_duration")
+    return 0
 
 # Function to start the subprocess
 def start_subprocess():
@@ -35,8 +48,40 @@ def terminate_subprocess(process):
             process.kill()
         st.rerun()
 
+# Function to connect to the database
+def get_db_connection():
+    connection = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="iot"
+    )
+    return connection
+
+def insert_sleep_data(user_id, facedetect_duration):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('INSERT INTO sleeptrack (user_id, start_time, end_time, sleep_minute, facedetected_minute) VALUES (%s, %s, %s, %s, %s)', 
+                       (user_id, start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration))
+        conn.commit()
+        return True
+    except mysql.connector.Error as err:
+        if err.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
+            return False
+        else:
+            raise err
+    finally:
+        cursor.close()
+        conn.close()
+
+
+
+
 # Home Page Function
 def sleep_page():
+    global start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration
+
     st.title("Sleep Page")
     st.write("Welcome to the sleep optimization page!")
 
@@ -63,13 +108,7 @@ def sleep_page():
 
     # Connect to the MySQL database
     try:
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            passwd="",
-            database="iot"
-        )
-
+        connection =get_db_connection() 
         if connection.is_connected():
             cursor = connection.cursor()
 
@@ -90,14 +129,27 @@ def sleep_page():
                     
                     # Start the subprocess
                     st.session_state.test_process = start_subprocess()
+                    start_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
 
                 # Display the "Wake Up" button only if the process is running
                 if st.session_state.test_process is not None:
                     if st.button("Wake Up"):
+                        facedetect_duration = load_faceDetect_duration()
                         # Terminate the subprocess if it's running
                         if st.session_state.test_process is not None:
                             terminate_subprocess(st.session_state.test_process)
                             st.session_state.test_process = None  # Reset the state
+                            # Assign the current timestamp to end_sleep_time
+                            end_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            
+                            # Calculate sleep duration in minutes
+                            start_dt = datetime.strptime(start_sleep_time, '%Y-%m-%d %H:%M:%S')
+                            end_dt = datetime.strptime(end_sleep_time, '%Y-%m-%d %H:%M:%S')
+                            sleep_duration = ((end_dt - start_dt).total_seconds() / 60) - (facedetect_duration)
+
+                            # Insert sleep data into the database
+                            insert_sleep_data(user_id, facedetect_duration)
             else:
                 st.warning(f"user_id {user_id} does not exist in the faceregister table.")
                 faceupload.faceupload_page() 

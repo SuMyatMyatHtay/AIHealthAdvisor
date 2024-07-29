@@ -20,6 +20,7 @@ def delete_user_id():
 def home_page():
     st.title("Home Page")
     st.write("Welcome to the main page!")
+
     if st.button("Logout"):
         delete_user_id()
         # st.session_state.page = "login"
