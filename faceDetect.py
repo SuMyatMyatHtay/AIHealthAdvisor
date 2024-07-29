@@ -1,10 +1,22 @@
+import signal
+import sys
 from PIL import Image, ImageOps
 import tensorflow as tf
 import cv2
 import numpy as np
 import os
-import sys
-from time import sleep
+
+# Variable to control the loop
+running = True
+
+def signal_handler(sig, frame):
+    global running
+    print('Signal received, stopping...')
+    running = False
+
+# Register the signal handler
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 label = ''
 frame = None
@@ -17,13 +29,9 @@ def import_and_predict(image_data, model):
         image = np.asarray(image)
         image = (image.astype(np.float32) / 255.0)
         img_reshape = image[np.newaxis, ...]
-        # print(f'Reshape: {img_reshape}')
-
-        # Call the model directly
         prediction = model(img_reshape, training=False)
-        return prediction.numpy()  # Convert to numpy array if needed
+        return prediction.numpy()
     except Exception as e:
-        # print(f"Error in import_and_predict: {e}")
         return None
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +40,6 @@ temp_data_path = os.path.join(current_directory, 'my_model.hdf5')
 try:
     model = tf.keras.models.load_model(r'C:\Python\AIHealthAdvisor\my_model.hdf5')
 except Exception as e:
-    # print(f"Error loading model: {e}")
     sys.exit(1)
 
 cap = cv2.VideoCapture(0)
@@ -46,33 +53,41 @@ else:
 # Initialize previous prediction variable
 previous_predict = None
 
-while True:
+# Load the OpenCV face detector
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+while running:
     ret, original = cap.read()
     if not ret:
         print("Failed to capture image")
         break
 
-    frame = cv2.resize(original, (224, 224))
-    cv2.imwrite(filename='img.jpg', img=original)
-    image = Image.open('img.jpg')
+    gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
-    prediction = import_and_predict(image, model)
-    if prediction is None:
-        print("Prediction failed")
-        break
-
-    if np.argmax(prediction) == 0:
-        predict = "Andy"
-    elif np.argmax(prediction) == 1:
-        predict = "Ei"
-    elif np.argmax(prediction) == 2:
-        predict = "Joe"
-    elif np.argmax(prediction) == 3:
-        predict = "Su"
+    if len(faces) == 0:
+        predict = "None"
     else:
-        predict = "Unknown"
+        frame = cv2.resize(original, (224, 224))
+        cv2.imwrite(filename='img.jpg', img=original)
+        image = Image.open('img.jpg')
 
-    # Check if the prediction has changed
+        prediction = import_and_predict(image, model)
+        if prediction is None:
+            print("Prediction failed")
+            break
+
+        if np.argmax(prediction) == 0:
+            predict = "Andy"
+        elif np.argmax(prediction) == 1:
+            predict = "Ei"
+        elif np.argmax(prediction) == 2:
+            predict = "Joe"
+        elif np.argmax(prediction) == 3:
+            predict = "Su"
+        else:
+            predict = "Unknown"
+
     if predict != previous_predict:
         print(f"{predict}")
         previous_predict = predict
@@ -80,8 +95,6 @@ while True:
     cv2.putText(original, predict, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
     cv2.imshow("Classification", original)
-
-    sleep(1)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

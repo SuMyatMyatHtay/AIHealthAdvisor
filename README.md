@@ -43,6 +43,8 @@ database="iot"
 # Bugs Left to Fix
 
 - Login button needs to click twice to login
+- Face Upload Page needs to click twice to disable (but do not crash the server)
+- Wake Up button needs to click thrice to disable (but do not crash the server)
 
 # Minor Flag Outs
 

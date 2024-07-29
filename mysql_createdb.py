@@ -18,12 +18,12 @@ def create_database_and_table():
         # Connect to the IOT database
         db.database = "iot"
 
-        # Check if the table exists
+        # Check if the users table exists
         cursor.execute("SHOW TABLES LIKE 'users'")
-        result = cursor.fetchone()
+        result_users = cursor.fetchone()
 
-        if result:
-            print("Table already exists.")
+        if result_users:
+            print("Users table already exists.")
         else:
             cursor.execute("""
                 CREATE TABLE users(
@@ -32,7 +32,58 @@ def create_database_and_table():
                     password VARCHAR(255) NOT NULL 
                 )
             """)
-            print("Table created successfully.")
+            print("Users table created successfully.")
+
+        # Check if the sensor table exists 
+        cursor.execute("SHOW TABLES LIKE 'sensor'")
+        result_sensor = cursor.fetchone()
+
+        if result_sensor: 
+            print("Sensor table already exists.")
+        else: 
+            cursor.execute("""
+                           CREATE TABLE `sensor` (
+                                `datetime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                                `sensor` text NOT NULL,
+                                `value` text NOT NULL
+                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                           """)
+
+        # Check if the faceregister table exists
+        cursor.execute("SHOW TABLES LIKE 'faceregister'")
+        result_faceregister = cursor.fetchone()
+
+        if result_faceregister:
+            print("faceregister table already exists.")
+        else:
+            cursor.execute("""
+                CREATE TABLE faceregister(
+                    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+                    user_id INT(11),
+                    status VARCHAR(255) NOT NULL
+                )
+            """)
+            print("faceregister table created successfully.")
+
+
+        # Check if the sleeptrack table exists
+        cursor.execute("SHOW TABLES LIKE 'sleeptrack'")
+        result_sleeptrack = cursor.fetchone()
+
+        if result_sleeptrack: 
+            print("sleeptrack table already exists.")
+        else: 
+            cursor.execute(""" 
+                CREATE TABLE sleeptrack ( 
+                    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+                    user_id INT(11), 
+                    start_time VARCHAR(255) NOT NULL, 
+                    end_time VARCHAR(255) NOT NULL, 
+                    sleep_minute INT(11) NOT NULL,
+                    facedetected_minute INT(11) NOT NULL
+                )
+            """)
+            print("sleeptrack table created successfully.")
 
     except mysql.Error as err:
         print(f"Error: {err}")

@@ -23,9 +23,14 @@ temp_data_path = os.path.join(parent_directory, 'tempData.json')
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-def save_user_id(user_id):
+def save_user_id(user_id, username):
+    jsontempData = {
+        "user_id": user_id,
+        "username" : username
+
+    }
     with open(temp_data_path, 'w') as f:
-        json.dump({"user_id": user_id}, f)
+        json.dump(jsontempData, f)
 
 def load_user_id():
     if os.path.exists(temp_data_path):
@@ -92,7 +97,7 @@ def rundata():
         if st.button("Login"):
             user_id = authenticate(login_username, login_password)
             if user_id:
-                save_user_id(user_id)
+                save_user_id(user_id, login_username)
                 st.success("Login successful!")
                 # st.session_state.page = "main"
                 st.rerun()

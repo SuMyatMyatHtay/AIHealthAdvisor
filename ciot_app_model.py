@@ -42,11 +42,11 @@ def image_gen_w_aug(train_parent_directory, test_parent_directory):
     
     return train_generator, val_generator, test_generator
 
-def model_output_for_TL(pre_trained_model, last_output):
+def model_output_for_TL(pre_trained_model, last_output, num_classes):
     x = Flatten()(last_output)
     x = Dense(512, activation='relu')(x)
     x = Dropout(0.2)(x)
-    x = Dense(5, activation='softmax')(x)
+    x = Dense(num_classes, activation='softmax')(x)
     
     model = Model(pre_trained_model.input, x)
     
@@ -57,6 +57,9 @@ test_dir = os.path.join('datasets/test/')
 
 train_generator, validation_generator, test_generator = image_gen_w_aug(train_dir, test_dir)
 
+# Count the number of folders in the test directory to determine the number of classes
+num_classes = len(next(os.walk(test_dir))[1])
+
 pre_trained_model = InceptionV3(input_shape=(75, 75, 3), include_top=False, weights='imagenet')
 
 for layer in pre_trained_model.layers:
@@ -65,7 +68,7 @@ for layer in pre_trained_model.layers:
 last_layer = pre_trained_model.get_layer('mixed7')
 last_output = last_layer.output
 
-model_TL = model_output_for_TL(pre_trained_model, last_output)
+model_TL = model_output_for_TL(pre_trained_model, last_output, num_classes)
 model_TL.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 history_TL = model_TL.fit(
