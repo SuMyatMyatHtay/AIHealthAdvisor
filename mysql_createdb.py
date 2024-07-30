@@ -85,6 +85,27 @@ def create_database_and_table():
             """)
             print("sleeptrack table created successfully.")
 
+
+        # Check if the userinfo table exists
+        cursor.execute("SHOW TABLES LIKE 'userinfo'")
+        result_userinfo = cursor.fetchone()
+
+        if result_userinfo: 
+            print("userinfo table already exists.")
+        else: 
+            cursor.execute(""" 
+                CREATE TABLE userinfo ( 
+                    id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+                    user_id INT(11) NOT NULL, 
+                    gender VARCHAR(255), 
+                    age INT(11), 
+                    birthdate VARCHAR(255), 
+                    height VARCHAR(255),
+                    goal VARCHAR(255)
+                )
+            """)
+            print("userinfo table created successfully.")
+
     except mysql.Error as err:
         print(f"Error: {err}")
 
