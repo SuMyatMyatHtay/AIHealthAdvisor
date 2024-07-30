@@ -49,6 +49,7 @@ database="iot"
 # Major Bugs
 
 - Camera does not terminate when the user successfully insert the data into db but it terminates without db. I think need to check the asyn and sync later.
+- It is inserting to the database two times. (MUST FIX!)
 
 # Minor Flag Outs
 

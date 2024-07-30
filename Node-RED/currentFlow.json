@@ -69,7 +69,12 @@
         "rules": [
             {
                 "t": "eq",
-                "v": "Sleep Page",
+                "v": "Sleep Button",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Wake Up Button",
                 "vt": "str"
             },
             {
@@ -90,13 +95,17 @@
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 4,
-        "x": 710,
-        "y": 360,
+        "outputs": 5,
+        "x": 630,
+        "y": 420,
         "wires": [
             [
-                "b378ad32a3df8eac",
-                "1d11ce42bb5b2c2c"
+                "1d11ce42bb5b2c2c",
+                "9867b0b6c31c1004",
+                "16d4b07c5751a244"
+            ],
+            [
+                "c533e078689f4843"
             ],
             [],
             [],
@@ -149,19 +158,18 @@
         "rules": [
             {
                 "t": "eq",
-                "v": "Correct User",
+                "v": "Correct User Face",
                 "vt": "str"
             }
         ],
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 1400,
-        "y": 480,
+        "x": 1260,
+        "y": 440,
         "wires": [
             [
-                "b55b994a69b527db",
-                "16d4b07c5751a244"
+                "b55b994a69b527db"
             ]
         ]
     },
@@ -189,8 +197,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1240,
-        "y": 700,
+        "x": 1340,
+        "y": 520,
         "wires": [
             [
                 "fd4500e458202d9b",
@@ -215,8 +223,8 @@
         "bytopic": "all",
         "topic": "topic",
         "outputs": 1,
-        "x": 1600,
-        "y": 620,
+        "x": 1680,
+        "y": 560,
         "wires": [
             [
                 "5d8e86f8e9c170b9"
@@ -236,8 +244,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1590,
-        "y": 720,
+        "x": 1690,
+        "y": 620,
         "wires": []
     },
     {
@@ -315,11 +323,11 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1170,
-        "y": 420,
+        "x": 1010,
+        "y": 300,
         "wires": [
             [
-                "e428c430ca87c146"
+                "f612ac0ef626ce25"
             ]
         ]
     },
@@ -339,29 +347,6 @@
         "x": 2170,
         "y": 480,
         "wires": []
-    },
-    {
-        "id": "b378ad32a3df8eac",
-        "type": "exec",
-        "z": "e49c89f948ae1d6a",
-        "command": "python -u C:\\python\\AIHealthAdvisor\\faceDetect.py",
-        "addpay": "",
-        "append": "",
-        "useSpawn": "true",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "Run Detector",
-        "x": 950,
-        "y": 320,
-        "wires": [
-            [
-                "3dba8cf5c73f9023",
-                "c44cdc5d06aceede"
-            ],
-            [],
-            []
-        ]
     },
     {
         "id": "26dbaadaafe7961e",
@@ -704,8 +689,8 @@
                 "tot": "bool"
             }
         ],
-        "x": 1570,
-        "y": 560,
+        "x": 910,
+        "y": 500,
         "wires": [
             []
         ]
@@ -725,8 +710,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 820,
-        "y": 140,
+        "x": 800,
+        "y": 100,
         "wires": [
             [
                 "26dbaadaafe7961e"
@@ -747,8 +732,8 @@
                 "tot": "bool"
             }
         ],
-        "x": 970,
-        "y": 80,
+        "x": 890,
+        "y": 600,
         "wires": [
             []
         ]
@@ -794,8 +779,48 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 880,
-        "y": 240,
+        "x": 840,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "9867b0b6c31c1004",
+        "type": "exec",
+        "z": "e49c89f948ae1d6a",
+        "command": "python -u C:\\python\\AIHealthAdvisor\\faceDetect.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Run Detector",
+        "x": 850,
+        "y": 440,
+        "wires": [
+            [
+                "3dba8cf5c73f9023",
+                "c44cdc5d06aceede",
+                "e428c430ca87c146"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "f612ac0ef626ce25",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 260,
         "wires": []
     },
     {
