@@ -58,22 +58,30 @@ def get_db_connection():
     )
     return connection
 
-def insert_sleep_data(user_id, facedetect_duration):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    try:
-        cursor.execute('INSERT INTO sleeptrack (user_id, start_time, end_time, sleep_minute, facedetected_minute) VALUES (%s, %s, %s, %s, %s)', 
-                       (user_id, start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration))
-        conn.commit()
-        return True
-    except mysql.connector.Error as err:
-        if err.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
-            return False
-        else:
-            raise err
-    finally:
-        cursor.close()
-        conn.close()
+def insert_sleep_data(user_id, facedetect_duration, sleep_duration):
+    print("Insert Sleep Data")
+    if(sleep_duration <1 and facedetect_duration <1) : 
+        print("Duration Too Short so not saving in db")
+    else :
+        print("Should be saved")
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO sleeptrack (user_id, start_time, end_time, sleep_minute, facedetected_minute) VALUES (%s, %s, %s, %s, %s)', 
+                        (user_id, start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration))
+            conn.commit()
+            return True
+        except mysql.connector.Error as err:
+            if err.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
+                return False
+            else:
+                raise err
+        finally:
+            cursor.close()
+            conn.close()
+
+    terminate_subprocess(st.session_state.test_process)
+    st.session_state.test_process = None  # Reset the state
 
 
 
@@ -125,6 +133,7 @@ def sleep_page():
                     st.session_state.test_process = None
 
                 if st.button("Sleep"):
+                    print("Sleep Button")
                     st.write("The user is sleeping. Face Detection is On. Good Night!")
                     
                     # Start the subprocess
@@ -135,21 +144,24 @@ def sleep_page():
                 # Display the "Wake Up" button only if the process is running
                 if st.session_state.test_process is not None:
                     if st.button("Wake Up"):
+                        print("Wake Up Button")
                         facedetect_duration = load_faceDetect_duration()
                         # Terminate the subprocess if it's running
                         if st.session_state.test_process is not None:
-                            terminate_subprocess(st.session_state.test_process)
-                            st.session_state.test_process = None  # Reset the state
-                            # Assign the current timestamp to end_sleep_time
-                            end_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            
                             # Calculate sleep duration in minutes
+                            end_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             start_dt = datetime.strptime(start_sleep_time, '%Y-%m-%d %H:%M:%S')
                             end_dt = datetime.strptime(end_sleep_time, '%Y-%m-%d %H:%M:%S')
                             sleep_duration = ((end_dt - start_dt).total_seconds() / 60) - (facedetect_duration)
-
+                            print(sleep_duration)
                             # Insert sleep data into the database
-                            insert_sleep_data(user_id, facedetect_duration)
+                            insert_sleep_data(user_id, facedetect_duration, sleep_duration)
+
+                            
+                            # Assign the current timestamp to end_sleep_time
+                           
+                            
+                            
             else:
                 st.warning(f"user_id {user_id} does not exist in the faceregister table.")
                 faceupload.faceupload_page() 

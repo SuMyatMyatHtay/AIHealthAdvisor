@@ -71,6 +71,10 @@ def import_and_predict(image_data, model):
 current_directory = os.path.dirname(os.path.abspath(__file__))
 # temp_data_path = os.path.join(current_directory, 'my_model.hdf5')
 temp_data_path = os.path.join(current_directory, 'tempData.json')
+test_folder_path = os.path.join(current_directory, 'datasets/test')
+
+# Get folder names dynamically
+folder_names = sorted(os.listdir(test_folder_path))
 
 try:
     with open(temp_data_path, 'r') as file:
@@ -118,21 +122,28 @@ while running:
             print("Prediction failed")
             break
 
-        if np.argmax(prediction) == 0:
-            predict = "Andy"
-        elif np.argmax(prediction) == 1:
-            predict = "Ei"
-        elif np.argmax(prediction) == 2:
-            predict = "Joe"
-        elif np.argmax(prediction) == 3:
-            predict = "Su"
+        # Map prediction to folder names
+        predicted_index = np.argmax(prediction)
+        if predicted_index < len(folder_names):
+            predict = folder_names[predicted_index]
         else:
-            predict = "Unknown"
+            predict = "IDK"
+
+        # if np.argmax(prediction) == 0:
+        #     predict = "Andy"
+        # elif np.argmax(prediction) == 1:
+        #     predict = "Ei"
+        # elif np.argmax(prediction) == 2:
+        #     predict = "Joe"
+        # elif np.argmax(prediction) == 3:
+        #     predict = "Su"
+        # else:
+        #     predict = "Unknown"
 
     if predict != previous_predict:
         # print(f"{predict}")
         if(predict == username): 
-            print("Correct User")
+            print("Correct User Face")
             start_time = time.time() 
 
         else: 
