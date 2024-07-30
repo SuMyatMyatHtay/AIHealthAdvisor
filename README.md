@@ -1,6 +1,6 @@
 # How to run the streamlit for now
 
-streamlit run streamlit.py
+streamlit run app.py
 
 # How to run both streamlit and camera
 
