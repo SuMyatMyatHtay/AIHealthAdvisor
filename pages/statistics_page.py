@@ -63,6 +63,39 @@ def get_calories_last_seven_days(user_id):
         return final_result
     return []
 
+def get_sleep_duration_last_seven_days(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        query = '''
+        SELECT date, COALESCE(SUM(sleep_minute), 0) as total_duration
+        FROM sleeptrack
+        WHERE user_id = %s AND date >= %s
+        GROUP BY date
+        ORDER BY date ASC
+        '''
+        start_date = date.today() - timedelta(days=6)
+        cursor.execute(query, (user_id, start_date))
+        result = cursor.fetchall()
+        conn.close()
+
+        # Debugging: Print the result to inspect its structure
+        # st.write("Sleep query result:", result)
+
+        # Fill missing days with zero sleep duration
+        date_sleep_dict = {start_date + timedelta(days=i): 0 for i in range(7)}
+        for row in result:
+            # Check if the row has the expected number of elements
+            if len(row) == 2:
+                date_sleep_dict[row[0]] = row[1]
+            else:
+                st.write("Unexpected row structure:", row)
+
+        # Prepare final result
+        final_result = [(d.strftime('%Y-%m-%d'), s) for d, s in date_sleep_dict.items()]
+        return final_result
+    return []
+
 def get_user_details(user_id):
     conn = create_connection()
     if conn:
@@ -91,21 +124,34 @@ def calculate_bmr(gender, weight, height, age):
     return bmr
 
 def statistics():
-    st.title("Caloric Intake Overview: Last 7 Days")
+    st.title("User Statistics")
     user_id = load_user_id()
     
     if user_id:
-        # Extract data
-        result = get_calories_last_seven_days(user_id)
+        # Extract caloric intake data
+        calories_result = get_calories_last_seven_days(user_id)
         
-        # Convert Decimals to floats and handle date formatting
-        dates = [x[0] for x in result]
-        values = [float(x[1]) if isinstance(x[1], decimal.Decimal) else float(x[1]) for x in result]
+        # Extract sleep duration data
+        sleep_result = get_sleep_duration_last_seven_days(user_id)
+        
+        # Convert Decimals to floats and handle date formatting for calories
+        calories_dates = [x[0] for x in calories_result]
+        calories_values = [float(x[1]) if isinstance(x[1], decimal.Decimal) else float(x[1]) for x in calories_result]
 
-        # Create DataFrame
-        data = pd.DataFrame({
-            'Date': pd.to_datetime(dates),
-            'Value': values
+        # Convert Decimals to floats and handle date formatting for sleep
+        sleep_dates = [x[0] for x in sleep_result]
+        sleep_values = [float(x[1]) if isinstance(x[1], decimal.Decimal) else float(x[1]) for x in sleep_result]
+
+        # Create DataFrame for calories
+        calories_data = pd.DataFrame({
+            'Date': pd.to_datetime(calories_dates),
+            'Value': calories_values
+        })
+
+        # Create DataFrame for sleep
+        sleep_data = pd.DataFrame({
+            'Date': pd.to_datetime(sleep_dates),
+            'Value': sleep_values
         })
 
         # Get user details
@@ -115,27 +161,27 @@ def statistics():
             gender, age, _, height, weight = user_details
             target_calories = calculate_bmr(gender, weight, height, age)
             
-            # Create a list for the second line 
-            second_line_values = [target_calories] * len(dates) 
+            # Create a list for the target calories line 
+            target_calories_values = [target_calories] * len(calories_dates) 
 
-            # Create DataFrame for the second line
-            second_line_data = pd.DataFrame({
-                'Date': pd.to_datetime(dates),
-                'Value': second_line_values
+            # Create DataFrame for the target calories line
+            target_calories_data = pd.DataFrame({
+                'Date': pd.to_datetime(calories_dates),
+                'Value': target_calories_values
             })
 
-            # Create a line chart with Plotly
-            fig = go.Figure()
+            # Create a line chart for caloric intake with Plotly
+            calories_fig = go.Figure()
 
-            # Add first line trace
-            fig.add_trace(go.Scatter(x=data['Date'], y=data['Value'], mode='lines+markers', name='Caloric Intake'))
+            # Add caloric intake trace
+            calories_fig.add_trace(go.Scatter(x=calories_data['Date'], y=calories_data['Value'], mode='lines+markers', name='Caloric Intake'))
 
-            # Add second line trace
-            fig.add_trace(go.Scatter(x=second_line_data['Date'], y=second_line_data['Value'], mode='lines+markers', name='Target Calories'))
+            # Add target calories trace
+            calories_fig.add_trace(go.Scatter(x=target_calories_data['Date'], y=target_calories_data['Value'], mode='lines+markers', name='Target Calories'))
 
             # Update layout with custom width, height, and y-axis minimum value
-            fig.update_layout(
-                title='',
+            calories_fig.update_layout(
+                title='Caloric Intake Overview: Last 7 Days',
                 xaxis_title='Date',
                 yaxis_title='Calories',
                 yaxis=dict(range=[0, None]),  
@@ -143,8 +189,27 @@ def statistics():
                 height=400  
             )
 
-            # Display the Plotly chart in Streamlit
-            st.plotly_chart(fig)
+            # Display the caloric intake chart in Streamlit
+            st.plotly_chart(calories_fig)
+
+            # Create a line chart for sleep duration with Plotly
+            sleep_fig = go.Figure()
+
+            # Add sleep duration trace
+            sleep_fig.add_trace(go.Scatter(x=sleep_data['Date'], y=sleep_data['Value'], mode='lines+markers', name='Sleep Duration'))
+
+            # Update layout with custom width, height, and y-axis minimum value
+            sleep_fig.update_layout(
+                title='Sleep Duration: Last 7 Days',
+                xaxis_title='Date',
+                yaxis_title='Minutes',
+                yaxis=dict(range=[0, None]),  
+                width=800,  
+                height=400  
+            )
+
+            # Display the sleep duration chart in Streamlit
+            st.plotly_chart(sleep_fig)
 
 if __name__ == "__main__":
     statistics()
