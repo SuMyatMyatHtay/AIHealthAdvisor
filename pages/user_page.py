@@ -185,12 +185,9 @@ def user_page():
                        
                     }
                     .user-table th {
-                        background-color: #f2f2f2;
                         font-weight: bold;
                     }
-                    .user-table tr:nth-child(even) {
-                        background-color: #f9f9f9;
-                    }
+                   
                     </style>
                     """,
                     unsafe_allow_html=True
