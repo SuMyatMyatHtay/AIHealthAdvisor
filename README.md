@@ -9,8 +9,7 @@ python runscript.py
 # How to set up (Su's Part)
 
 - run "python mysql_createdb.py"
-- inside the mysql, run the file which is under the "MySQL Database" folder
-- run "python ciot_app_model.py" file
+- deploy the currentFlow.json under the Node-Red folder. 
 
 # What will be in next release
 

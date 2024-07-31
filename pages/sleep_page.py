@@ -3,7 +3,9 @@ import mysql.connector
 import os
 import json
 import subprocess
+
 from datetime import datetime
+from datetime import date
 from mysql.connector import Error
 import pages.faceupload_page as faceupload
 
@@ -58,8 +60,8 @@ def insert_sleep_data(user_id, facedetect_duration, sleep_duration):
         cursor = conn.cursor()
         try:
             cursor.execute(
-                'INSERT INTO sleeptrack (user_id, start_time, end_time, sleep_minute, facedetected_minute) VALUES (%s, %s, %s, %s, %s)',
-                (user_id, start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration)
+                'INSERT INTO sleeptrack (user_id, start_time, end_time, sleep_minute, facedetected_minute, date) VALUES (%s, %s, %s, %s, %s, %s)',
+                (user_id, start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration, date.today().strftime("%Y-%m-%d"))
             )
             conn.commit()
             return True

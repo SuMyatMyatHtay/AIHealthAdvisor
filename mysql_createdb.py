@@ -80,7 +80,8 @@ def create_database_and_table():
                     start_time VARCHAR(255) NOT NULL, 
                     end_time VARCHAR(255) NOT NULL, 
                     sleep_minute INT(11) NOT NULL,
-                    facedetected_minute INT(11) NOT NULL
+                    facedetected_minute INT(11) NOT NULL, 
+                    date DATE NOT NULL,
                 )
             """)
             print("sleeptrack table created successfully.")
