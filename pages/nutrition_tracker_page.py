@@ -38,7 +38,7 @@ def get_user_details(user_id):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        cursor.execute('''SELECT gender, age, birthdate, height, weight FROM userinfo WHERE id = %s;''', (user_id,))
+        cursor.execute('''SELECT gender, age, birthdate, height, weight FROM userinfo WHERE user_id = %s;''', (user_id,))
         user_details = cursor.fetchone()  
         conn.close()
         
@@ -124,7 +124,6 @@ def nutrition_tracker_page():
                 padding: 20px;
                 margin-bottom: 20px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                background-color: #DFF0D8;
             }
             .bmr-card {
                 border: 1px solid #ffffff;
@@ -132,7 +131,6 @@ def nutrition_tracker_page():
                 padding: 20px;
                 margin-bottom: 20px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                background-color: #D9EDF7;
             }
             .bmr-text {
                 font-size: 26px;
@@ -141,20 +139,13 @@ def nutrition_tracker_page():
             .bmr-value {
                 font-size: 22px;
                 font-weight: bold;
-                color: #333;
             }
             .stButton > button {
-                background-color: #007bff;
-                color: white;
                 font-weight: bold;
             }
             .stExpander > div {
-                background-color: #f8f9fa;
                 border-radius: 8px;
                 padding: 16px;
-            }
-            .stMarkdown > div {
-                background-color: #f8f9fa;
             }
             .meal-card {
                 border: 1px solid #ddd;
@@ -162,7 +153,6 @@ def nutrition_tracker_page():
                 padding: 16px;
                 margin-bottom: 16px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                background-color: #ffffff;
             }
             .meal-title {
                 font-size: 20px;

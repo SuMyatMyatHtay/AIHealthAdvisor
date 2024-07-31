@@ -100,7 +100,7 @@ def get_user_details(user_id):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        cursor.execute('''SELECT gender, age, birthdate, height, weight FROM userinfo WHERE id = %s;''', (user_id,))
+        cursor.execute('''SELECT gender, age, birthdate, height, weight FROM userinfo WHERE user_id = %s;''', (user_id,))
         user_details = cursor.fetchone()  
         conn.close()
         
