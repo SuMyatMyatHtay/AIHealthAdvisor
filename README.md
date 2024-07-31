@@ -24,6 +24,11 @@ user="root",
 password="",
 database="iot"
 
+# Progress Updates
+
+- Node-Red flow of sleep optimization is perfectly working with starting and termination process. Check out the currentflow.json
+- Sleep Optimization is working perfectly fine. Adjust here and there for user page and statistics then should be good to go.
+
 # Filenames
 
 - ciot_app_model => In Use (To train the AI)
@@ -53,9 +58,7 @@ database="iot"
 
 # Minor Flag Outs
 
-# Updates
-
-- Node-Red flow of sleep optimization is perfectly working with starting and termination process.
+- Nothing yet
 
 # Ei's Errors to Fix
 

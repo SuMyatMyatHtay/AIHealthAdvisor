@@ -96,13 +96,15 @@
         "checkall": "true",
         "repair": false,
         "outputs": 5,
-        "x": 630,
-        "y": 420,
+        "x": 550,
+        "y": 480,
         "wires": [
             [
                 "1d11ce42bb5b2c2c",
-                "9867b0b6c31c1004",
-                "16d4b07c5751a244"
+                "16d4b07c5751a244",
+                "3dba8cf5c73f9023",
+                "e428c430ca87c146",
+                "c44cdc5d06aceede"
             ],
             [
                 "c533e078689f4843"
@@ -124,8 +126,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 620,
-        "y": 180,
+        "x": 700,
+        "y": 220,
         "wires": []
     },
     {
@@ -165,8 +167,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 1260,
-        "y": 440,
+        "x": 1140,
+        "y": 420,
         "wires": [
             [
                 "b55b994a69b527db"
@@ -690,7 +692,7 @@
             }
         ],
         "x": 910,
-        "y": 500,
+        "y": 600,
         "wires": [
             []
         ]
@@ -710,8 +712,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 800,
-        "y": 100,
+        "x": 880,
+        "y": 160,
         "wires": [
             [
                 "26dbaadaafe7961e"
@@ -732,8 +734,8 @@
                 "tot": "bool"
             }
         ],
-        "x": 890,
-        "y": 600,
+        "x": 910,
+        "y": 660,
         "wires": [
             []
         ]
@@ -763,7 +765,8 @@
         "y": 160,
         "wires": [
             [
-                "9f2b38e6cb3642bb"
+                "9f2b38e6cb3642bb",
+                "0bf3a61f216fed33"
             ]
         ]
     },
@@ -779,33 +782,9 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 840,
-        "y": 560,
+        "x": 940,
+        "y": 540,
         "wires": []
-    },
-    {
-        "id": "9867b0b6c31c1004",
-        "type": "exec",
-        "z": "e49c89f948ae1d6a",
-        "command": "python -u C:\\python\\AIHealthAdvisor\\faceDetect.py",
-        "addpay": "",
-        "append": "",
-        "useSpawn": "true",
-        "timer": "",
-        "winHide": false,
-        "oldrc": false,
-        "name": "Run Detector",
-        "x": 850,
-        "y": 440,
-        "wires": [
-            [
-                "3dba8cf5c73f9023",
-                "c44cdc5d06aceede",
-                "e428c430ca87c146"
-            ],
-            [],
-            []
-        ]
     },
     {
         "id": "f612ac0ef626ce25",
@@ -822,6 +801,183 @@
         "x": 1220,
         "y": 260,
         "wires": []
+    },
+    {
+        "id": "278a9149172797d5",
+        "type": "inject",
+        "z": "e49c89f948ae1d6a",
+        "name": "everyday at 12pm",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 12 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "f098f5e066b05245",
+                "173e83090eca1f6b"
+            ]
+        ]
+    },
+    {
+        "id": "e425991e58cb2d3d",
+        "type": "e-mail",
+        "z": "e49c89f948ae1d6a",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "summh11@gmail.com",
+        "dname": "send email reminder",
+        "x": 660,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "173e83090eca1f6b",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "draft email",
+        "func": "msg.topic = \"Exercise Reminder\";\nmsg.payload = \"REMINDER\\n\\nIt is time to exercise!\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 600,
+        "wires": [
+            [
+                "e425991e58cb2d3d"
+            ]
+        ]
+    },
+    {
+        "id": "17edc3d90ccba1d7",
+        "type": "ui_gauge",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "group": "c8bdb824d6c60a7d",
+        "order": 0,
+        "width": "6",
+        "height": "6",
+        "gtype": "donut",
+        "title": "progress",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "25",
+        "seg2": "75",
+        "diff": false,
+        "className": "",
+        "x": 820,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0bf3a61f216fed33",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "progress simulate",
+        "func": "// Generate a random number between min and max\nvar min = 0; // Change to your minimum value\nvar max = 6000; // Change to your maximum value\n\nmsg.payload = Math.floor(Math.random() * (max - min + 1)) + min;\nmsg.percentage = msg.payload/6000*100\nmsg.percentage = parseFloat(msg.percentage.toFixed(2));\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 310,
+        "y": 40,
+        "wires": [
+            [
+                "715116acbbe0fe2e",
+                "eee948cfa1a352cb"
+            ]
+        ]
+    },
+    {
+        "id": "eee948cfa1a352cb",
+        "type": "ui_text",
+        "z": "e49c89f948ae1d6a",
+        "group": "c8bdb824d6c60a7d",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "steps GOAL: 6000   step COUNT:",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 590,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "715116acbbe0fe2e",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "extract percentage",
+        "func": "msg.payload = msg.percentage;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 40,
+        "wires": [
+            [
+                "17edc3d90ccba1d7"
+            ]
+        ]
+    },
+    {
+        "id": "f098f5e066b05245",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "e49c89f948ae1d6a",
+        "name": "exercise reminder",
+        "credtype": "account",
+        "account": "99763ca5c257de6a",
+        "text": "Remember to exercise today!",
+        "phonenumbervalue": "",
+        "apikeyvalue": "",
+        "apikeyinputtypemessage": "msg",
+        "phonenumberinputtypemessage": "msg",
+        "inputtypemessage": "str",
+        "rejectssl": false,
+        "x": 390,
+        "y": 700,
+        "wires": [
+            []
+        ]
     },
     {
         "id": "2453f6a8c0a6977a",
@@ -854,6 +1010,22 @@
         "width": "6",
         "collapse": false,
         "className": ""
+    },
+    {
+        "id": "c8bdb824d6c60a7d",
+        "type": "ui_group",
+        "name": "Progress Report",
+        "tab": "0216b1ccfb4c1339",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "99763ca5c257de6a",
+        "type": "node-red-contrib-whatsapp-cmb-account",
+        "name": "U_N0t_N1c3"
     },
     {
         "id": "0216b1ccfb4c1339",
