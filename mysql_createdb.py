@@ -100,11 +100,32 @@ def create_database_and_table():
                     gender VARCHAR(255), 
                     age INT(11), 
                     birthdate VARCHAR(255), 
-                    height VARCHAR(255),
+                    height INT(11),
+                    weight DECIMAL(10, 2),
                     goal VARCHAR(255)
                 )
             """)
             print("userinfo table created successfully.")
+
+        # Check if the usermeals table exists
+        cursor.execute("SHOW TABLES LIKE 'usermeals'")
+        result_usermeals = cursor.fetchone()
+
+        if result_usermeals: 
+            print("usermeals table already exists.")
+        else: 
+            cursor.execute(""" 
+                CREATE TABLE usermeals ( 
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    meal_type ENUM('breakfast', 'lunch', 'dinner', 'snack') NOT NULL,
+                    calories INT NOT NULL,
+                    date DATE NOT NULL,
+                    user_id INT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES userinfo(id)
+                )
+            """)
+            print("usermeals table created successfully.")
 
     except mysql.Error as err:
         print(f"Error: {err}")

@@ -46,11 +46,25 @@ database="iot"
 - Face Upload Page needs to click twice to disable (but do not crash the server)
 - Wake Up button needs to click thrice to disable (but do not crash the server)
 
-# Major Bugs
+# Fixed Bugs
 
-- Camera does not terminate when the user successfully insert the data into db but it terminates without db. I think need to check the asyn and sync later.
-- It is inserting to the database two times. (MUST FIX!)
+- Camera does not terminate when the user successfully insert the data into db but it terminates without db. I think need to check the asyn and sync later. (FIXED!)
+- It is inserting to the database two times. (FIXED!)
+- Wake Up button needs to click thrice to disable (but do not crash the server) (FIXED!)
 
 # Minor Flag Outs
 
-- This version haven't tested out yet for the Node-RED so please ignore the Node-RED folder for now.
+# Updates
+
+- Node-Red flow of sleep optimization is perfectly working with starting and termination process.
+
+# Ei's Errors to Fix
+
+1. Please dont hardcode. Retrieve from tempData.json file instead.
+   ![alt text](image.png)
+
+2. Ur Nutrition Planner page is not working. Please Fix.
+   ![alt text](image-1.png)
+
+3. Please Adjust ur page design. It is very hard to see. If you cannot make it dynamic for both light mode and dark mode, maybe you can try apply color for not just background but also the text itself.
+   ![alt text](image-2.png)
