@@ -170,8 +170,7 @@ def user_page():
                     <style>
                     .user-table {
                         width: 100%;
-                        border-collapse: collapse;
-                        background-color: #f9f9f9; /* Table background color */
+                        border-collapse: collapse;      
                         border-radius: 8px;
                         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                         overflow: hidden;
@@ -191,9 +190,6 @@ def user_page():
                     }
                     .user-table tr:nth-child(even) {
                         background-color: #f9f9f9;
-                    }
-                    .user-table tr:nth-child(odd) {
-                        background-color: #ffffff;
                     }
                     </style>
                     """,
