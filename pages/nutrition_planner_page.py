@@ -1,8 +1,23 @@
 import streamlit as st
 import mysql.connector
 from mysql.connector import Error
-import random
+import json
+import os
 from datetime import date
+
+# Get the directory of the currently running script
+current_directory = os.path.dirname(os.path.abspath(__file__))
+# Get the parent directory of the current directory
+parent_directory = os.path.dirname(current_directory)
+# Set temp_data_path to the parent directory, with the file name tempData.json
+temp_data_path = os.path.join(parent_directory, 'tempData.json')
+
+def load_user_id():
+    if os.path.exists(temp_data_path):
+        with open(temp_data_path, 'r') as f:
+            data = json.load(f)
+            return data.get("user_id")
+    return None
 
 # Function to create a connection to the MySQL database
 def create_connection():
@@ -10,7 +25,7 @@ def create_connection():
         conn = mysql.connector.connect(
             host="localhost",
             user="root",
-            passwd="",  # Replace with your MySQL password
+            passwd="",  
             database="iot"
         )
         if conn.is_connected():
@@ -19,14 +34,18 @@ def create_connection():
         st.write(f"Error: {e}")
         return None
 
-def get_user_details():
+def get_user_details(user_id):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
-        cursor.execute('''SELECT * FROM users WHERE id = 2;''')
-        user_details = cursor.fetchone()  # Fetch one row
+        cursor.execute('''SELECT gender, age, birthdate, height, weight FROM userinfo WHERE user_id = %s;''', (user_id,))
+        user_details = cursor.fetchone()  
         conn.close()
-        return user_details
+        
+        if user_details:
+            return (user_details[0], float(user_details[1]), user_details[2], float(user_details[3]), float(user_details[4]))
+        else:
+            return None
 
 # Function to calculate BMR
 def calculate_bmr(gender, weight, height, age):
@@ -50,28 +69,62 @@ def get_meals(meal_type, target_calories):
     if conn:
         cursor = conn.cursor()
         cursor.execute('''
-        SELECT id, name, calories, carbs, protein, fat
-        FROM foods
-        WHERE meal_type = %s AND calories <= %s''', (meal_type, target_calories))
+        SELECT 
+            id,
+            name,    
+            calories,    
+            ingredients,
+            recipes
+        FROM meals
+        WHERE meal_type = %s
+        ORDER BY ABS(calories - %s) ASC
+        LIMIT 1;''', (meal_type, target_calories))
         meals = cursor.fetchall()
         conn.close()
         return meals
 
-def select_meal(meal_options, target_calories):
-    # Shuffle meals to introduce variability
-    random.shuffle(meal_options)
-    selected_meals = []
-    current_calories = 0
+# Function to store meal plan in the database
+def store_meal_plan(meal_plan):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        today = date.today().strftime("%Y-%m-%d")
+        for meal_type, meals in meal_plan.items():
+            if meals:  # Check if there are meals for the type
+                # Extract details from the meal tuple
+                for meal in meals:
+                    meal_id, meal_name, calories, ingredients, recipes = meal
+                    cursor.execute('''
+                    INSERT INTO meal_plan (meal_name, meal_type, date, calories, ingredients, recipes) 
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    ''', (meal_name, meal_type, today, calories, ingredients, recipes))
+        conn.commit()
+        conn.close()
 
-    for meal in meal_options:
-        meal_calories = meal[2]
-        if current_calories + meal_calories <= target_calories:
-            selected_meals.append(meal)
-            current_calories += meal_calories
-            if current_calories >= target_calories:
-                break
-
-    return selected_meals
+# Function to retrieve meal plan for today from the database
+def get_meal_plan_for_today():
+    conn = create_connection()
+    if conn:
+        today = date.today().strftime("%Y-%m-%d")
+        cursor = conn.cursor()
+        cursor.execute('''
+        SELECT meal_name, meal_type, calories, ingredients, recipes 
+        FROM meal_plan 
+        WHERE date = %s
+        ''', (today,))
+        meal_plan_data = cursor.fetchall()
+        conn.close()
+        # Organize meals by type
+        meal_plan = {
+            'breakfast': [],
+            'lunch': [],
+            'dinner': [],
+            'snack': []
+        }
+        for meal_name, meal_type, calories, ingredients, recipes in meal_plan_data:
+            meal_plan[meal_type].append((None, meal_name, calories, ingredients, recipes))  # None for id, as it's not used here
+        return meal_plan
+    return None
 
 # Function to generate a daily meal plan
 def generate_daily_meal_plan(bmr):
@@ -87,29 +140,33 @@ def generate_daily_meal_plan(bmr):
         'dinner': select_meal(dinner_options, dinner_calories),
         'snack': select_meal(snack_options, snack_calories)
     }
-    return daily_meal_plan, breakfast_calories, lunch_calories, dinner_calories, snack_calories
+    return daily_meal_plan
 
-# Nutrition Planner Page Function
+def select_meal(meal_options, target_calories):
+    # Select the closest meal option to the target calories
+    return meal_options
+
 def nutrition_planner_page():
     st.title("Nutrition Planner")
     st.markdown("### Today's Meal Plan")
 
-    user_data = get_user_details()
+    user_id = load_user_id()
+    user_data = get_user_details(user_id)
     if user_data:
         weight = user_data[4]
-        height = user_data[5]
-        age = user_data[2]
-        gender = user_data[3]
+        height = user_data[3]
+        age = user_data[1]
+        gender = user_data[0]
 
-        # Check if a meal plan for today exists in session_state
-        today = date.today().strftime("%Y-%m-%d")
-        if "meal_plan_date" not in st.session_state or st.session_state.meal_plan_date != today:
+        # Check if a meal plan for today exists in the database
+        meal_plan = get_meal_plan_for_today()
+        
+        if not meal_plan or all(not meals for meals in meal_plan.values()):
             user_bmr = calculate_bmr(gender, weight, height, age)
-            daily_plan, breakfast_calories, lunch_calories, dinner_calories, snack_calories = generate_daily_meal_plan(user_bmr)
-            st.session_state.meal_plan = daily_plan
-            st.session_state.meal_plan_date = today
+            daily_plan = generate_daily_meal_plan(user_bmr)
+            store_meal_plan(daily_plan)
         else:
-            daily_plan = st.session_state.meal_plan
+            daily_plan = meal_plan
 
         # Custom CSS for card layout using inline styles
         def create_card(title, meals, background_color):
@@ -124,12 +181,14 @@ def nutrition_planner_page():
                     margin: 10px;
                     width: 100%;
                     max-width: 450px;
+                    height: 300px; /* Fixed height */
+                    overflow: auto; /* Scroll if content overflows */
                     display: inline-block;
                     vertical-align: top;
                 ">
                     <h4 style="margin-top: 0;">{title}</h4>
                     {"".join([
-                        f"<div style='margin-bottom: 10px;'><p style='margin: 0;'><strong>{meal[1]}</strong></p><p style='margin: 0;'><em>{meal[2]} kcal</em></p></div>"
+                        f"<div style='margin-bottom: 10px;'><p style='margin: 0;'><strong>{meal[1]}</strong></p><p style='margin: 0;'><em>{meal[2]} kcal</em></p><p style='margin: 0;'><strong>Ingredients:</strong> {meal[3]}</p><p style='margin: 0;'><strong>Recipe:</strong> {meal[4]}</p></div>"
                         for meal in meals
                     ])}
                 </div>
@@ -141,18 +200,18 @@ def nutrition_planner_page():
         col1, col2 = st.columns(2)
 
         with col1:
-            create_card('Breakfast', daily_plan['breakfast'], '#FFDDC1')
+            create_card('Breakfast', daily_plan['breakfast'], '#a83263')  
 
         with col2:
-            create_card('Lunch', daily_plan['lunch'], '#D1E2FF')
+            create_card('Lunch', daily_plan['lunch'], '#8732a8')  
         
         col3, col4 = st.columns(2)
         
         with col3:
-            create_card('Dinner', daily_plan['dinner'], '#D2F6E0')
+            create_card('Dinner', daily_plan['dinner'], '#a86132')  
 
         with col4:
-            create_card('Snacks', daily_plan['snack'], '#F3F3F3')
+            create_card('Snacks', daily_plan['snack'], '#32a86d') 
 
     else:
         st.write("User not found or error retrieving data.")
