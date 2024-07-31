@@ -57,3 +57,14 @@ database="iot"
 # Updates
 
 - Node-Red flow of sleep optimization is perfectly working with starting and termination process.
+
+# Ei's Errors to Fix
+
+1. Please dont hardcode. Retrieve from tempData.json file instead.
+   ![alt text](image.png)
+
+2. Ur Nutrition Planner page is not working. Please Fix.
+   ![alt text](image-1.png)
+
+3. Please Adjust ur page design. It is very hard to see. If you cannot make it dynamic for both light mode and dark mode, maybe you can try apply color for not just background but also the text itself.
+   ![alt text](image-2.png)

@@ -107,7 +107,7 @@ def show_expander(meal_type):
             if meal_name and calories and user_id:
                 save_meal(meal_name, meal_type, calories, user_id)
                 st.success(f"{meal_type.capitalize()} meal added successfully!")
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("Please provide both meal name and calories.")
 

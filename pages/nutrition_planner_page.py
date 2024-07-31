@@ -11,7 +11,7 @@ def create_connection():
             host="localhost",
             user="root",
             passwd="",  # Replace with your MySQL password
-            database="iot_ca2"
+            database="iot"
         )
         if conn.is_connected():
             return conn
