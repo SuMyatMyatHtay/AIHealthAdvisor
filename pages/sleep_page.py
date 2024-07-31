@@ -16,6 +16,7 @@ start_sleep_time = ""
 end_sleep_time = ""
 facedetect_duration = 0 
 sleep_duration = 0 
+is_sleeping = False
 
 def load_faceDetect_duration():
     if os.path.exists(temp_data_path):
@@ -72,7 +73,7 @@ def insert_sleep_data(user_id, facedetect_duration, sleep_duration):
             conn.close()
 
 def sleep_page():
-    global start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration
+    global start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration, is_sleeping
 
     st.title("Sleep Page")
     st.write("Welcome to the sleep optimization page!")
@@ -112,15 +113,18 @@ def sleep_page():
                 if 'test_process' not in st.session_state:
                     st.session_state.test_process = None
 
-                if st.button("Sleep"):
-                    print("Sleep Button")
-                    st.write("The user is sleeping. Face Detection is On. Good Night!")
-                    st.session_state.test_process = start_subprocess()
-                    start_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                if is_sleeping == False: 
+                    if st.button("Sleep"):
+                        print("Sleep Button")
+                        is_sleeping = True
+                        st.write("The user is sleeping. Face Detection is On. Good Night!")
+                        st.session_state.test_process = start_subprocess()
+                        start_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                if st.session_state.test_process is not None:
+                if st.session_state.test_process is not None and is_sleeping == True:
                     if st.button("Wake Up"):
                         print("Wake Up Button")
+                        is_sleeping = False
                         facedetect_duration = load_faceDetect_duration()
                         if st.session_state.test_process is not None:
                             end_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')

@@ -99,7 +99,6 @@ def user_page():
             text-align: center;
         }
         .edit-button {
-            background-color: #007bff; /* Button color */
             color: white;
             border: none;
             padding: 10px 20px;
@@ -156,12 +155,12 @@ def user_page():
                         update_user_details(user_id, name, age, gender, weight, height, birthdate.strftime('%Y-%m-%d'))
                         st.success("Details updated successfully")
                         st.session_state.edit_mode = False
-                        st.experimental_rerun()
+                        st.rerun()
 
                 with col2:
                     if st.button("Cancel"):
                         st.session_state.edit_mode = False
-                        st.experimental_rerun()
+                        st.rerun()
 
             else:
                 
@@ -232,7 +231,7 @@ def user_page():
                 
                 if st.button("Edit", key="edit-button"):
                     st.session_state.edit_mode = True
-                    st.experimental_rerun()
+                    st.rerun()
 
         else:
             st.write("User not found or error retrieving data.")
