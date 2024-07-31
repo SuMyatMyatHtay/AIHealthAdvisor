@@ -9,7 +9,7 @@ python runscript.py
 # How to set up (Su's Part)
 
 - run "python mysql_createdb.py"
-- deploy the currentFlow.json under the Node-Red folder. 
+- deploy the currentFlow.json under the Node-Red folder.
 
 # What will be in next release
 
@@ -67,3 +67,6 @@ database="iot"
 
 3. Please Adjust ur page design. It is very hard to see. If you cannot make it dynamic for both light mode and dark mode, maybe you can try apply color for not just background but also the text itself.
    ![alt text](image-2.png)
+
+4. Don't forget to adjust color for the Nutrition Tracker also yeah.
+   ![alt text](image-3.png)
