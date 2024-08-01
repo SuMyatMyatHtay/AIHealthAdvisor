@@ -103,7 +103,8 @@ def create_database_and_table():
                     birthdate VARCHAR(255), 
                     height INT(11),
                     weight DECIMAL(10, 2),
-                    goal VARCHAR(255)
+                    goal VARCHAR(255),
+                    sleep_goal_hour INT(11)
                 )
             """)
             print("userinfo table created successfully.")
