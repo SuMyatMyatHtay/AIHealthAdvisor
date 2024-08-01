@@ -4,6 +4,7 @@ from mysql.connector import Error
 import os
 import json
 from datetime import datetime
+from datetime import date
 
 # Get the directory of the currently running script
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -90,6 +91,25 @@ def calculate_bmr(gender, weight, height, age):
     
     return bmr
 
+
+def get_sleep_data(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('''SELECT sleep_goal_hour FROM userinfo WHERE user_id = %s;''', (user_id,))
+        sleep_goal = cursor.fetchone()
+        
+        cursor.execute('''SELECT SUM(facedetected_minute), SUM(sleep_minute) FROM sleeptrack WHERE user_id = %s AND date = %s;''', (user_id,  date.today().strftime("%Y-%m-%d")))
+        sleep_data = cursor.fetchone()
+        
+        conn.close()
+        
+        if sleep_goal and sleep_data:
+            return float(sleep_goal[0]), int(sleep_data[0]), float(sleep_data[1])
+        else:
+            return None, None, None
+        
+
 # User Page Function
 def user_page():
     
@@ -129,6 +149,7 @@ def user_page():
     if user_id:
         user_data = get_user_details(user_id)
         user_name = get_user_name(user_id)
+        sleep_goal, wake_ups, net_sleep_hours = get_sleep_data(user_id)
 
         if user_data and user_name:
             # Edit mode logic
@@ -163,6 +184,11 @@ def user_page():
                         st.rerun()
 
             else:
+                showSleepHour = ""
+                if(net_sleep_hours < 60): 
+                    showSleepHour = str(net_sleep_hours) + " minutes"
+                else: 
+                    showSleepHour = str(net_sleep_hours/60) + " Hours"
                 
                 st.markdown(
                     """
@@ -220,11 +246,16 @@ def user_page():
                             <td><strong>BMR</strong></td>
                             <td>{int(calculate_bmr(user_data[0], user_data[4], user_data[3], user_data[1]))}</td>
                         </tr>
+                        <tr>
+                            <td><strong>Sleep Goal (hours)</strong></td>
+                            <td>{sleep_goal}</td>
+                        </tr>
+                        
                     </table>
                     """,
                     unsafe_allow_html=True
                 )
-
+                # "wake_ups" for wake up time, "showSleepHour" for net Sleep Hours minute and hours dynamic
                 
                 if st.button("Edit", key="edit-button"):
                     st.session_state.edit_mode = True
