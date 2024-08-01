@@ -8,6 +8,8 @@ import pages.nutrition_planner_page as nutrition_planner
 import pages.nutrition_tracker_page as nutrition_tracker
 import pages.user_page as user_planner
 import pages.statistics_page as statistics
+import pages.exercises_page as exercises
+
 #st.set_page_config(layout="wide")
 
 # Get the directory of the currently running script
@@ -31,7 +33,7 @@ if os.path.exists(temp_data_path):
     # Navigation
     def main():
         st.sidebar.title("Navigation")
-        page = st.sidebar.radio("Go to", ["Home", "Sleep Optimization", "Nutrition Planner","Nutrition Tracker", "User Page", "Statistics Page"])
+        page = st.sidebar.radio("Go to", ["Home", "Sleep Optimization", "Nutrition Planner","Nutrition Tracker", "User Page", "Statistics Page", "Exercises Page"])
 
         
         if page == "Home":
@@ -51,6 +53,10 @@ if os.path.exists(temp_data_path):
         elif page == "Statistics Page":
             print("Statistics Page")
             statistics.statistics()
+        elif page == "Exercises Page":
+            print("Exercises Page")
+            exercises.exercises_page()
+        
 
     if __name__ == "__main__":
         main()
