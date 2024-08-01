@@ -78,7 +78,7 @@ def sleep_page():
     global start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration, is_sleeping
 
     st.title("Sleep Page")
-    st.write("Welcome to the sleep optimization page!")
+    st.write("Welcome to the sleep optimization page! The camera will be opened once you decided to sleep and it will be closed once you wake up.")
 
     try:
         with open(temp_data_path, 'r') as file:
@@ -110,7 +110,7 @@ def sleep_page():
             result = cursor.fetchone()
 
             if result[0]:
-                st.success(f"user_id {user_id} exists in the sleep table.")
+                # st.success(f"user_id {user_id} exists in the sleep table.")
 
                 if 'test_process' not in st.session_state:
                     st.session_state.test_process = None
@@ -139,7 +139,7 @@ def sleep_page():
                             st.session_state.test_process = None
 
             else:
-                st.warning(f"user_id {user_id} does not exist in the faceregister table.")
+                st.warning(f"username: {username} face is not registered yet to use this sleep optimization function.")
                 faceupload.faceupload_page()
 
     except Error as e:

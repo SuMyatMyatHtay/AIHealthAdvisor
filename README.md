@@ -15,9 +15,13 @@ python runscript.py
 
 # What will be in next release
 
-- I will make the python file to install all the data and all the necessary thingys in one shot.
-- I will combine setup part in one shot (Sorry I lazy to do rn)
+- Some pages showing error before login.
+- Print out the Login first text on pages before login.
+- User Info request page connect.
+- Home page connect with Eunice Steps, Sleep Record and sort of.
 - One main file to handle the database connection rather than putting details in everything.
+- I will make the python file to install all the data and all the necessary thingys in one shot. (FIXED)
+- I will combine setup part in one shot (FIXED)
 
 # The Database Info that we will be using
 
@@ -51,7 +55,7 @@ database="iot"
 - Login button needs to click twice to login
 - Face Upload Page needs to click twice to disable (but do not crash the server)
 - Wake Up button needs to click thrice to disable (but do not crash the server)
-- After Register, the user does not lead to the Login Page directly 
+- After Register, the user does not lead to the Login Page directly
 
 # Fixed Bugs
 

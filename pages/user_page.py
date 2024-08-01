@@ -104,9 +104,18 @@ def get_sleep_data(user_id):
         
         conn.close()
         
-        if sleep_goal and sleep_data:
-            return float(sleep_goal[0]), int(sleep_data[0]), float(sleep_data[1])
+        # If sleep_goal is not None, use its value; otherwise, return None
+        sleep_goal_value = float(sleep_goal[0]) if sleep_goal and sleep_goal[0] is not None else None
+
+        if sleep_data:
+            facedetected_minute = int(sleep_data[0]) if sleep_data[0] is not None else None
+            sleep_minute = float(sleep_data[1]) if sleep_data[1] is not None else None
         else:
+            facedetected_minute = None
+            sleep_minute = None
+
+        return sleep_goal_value, facedetected_minute, sleep_minute
+    else:
             return None, None, None
         
 
@@ -185,10 +194,14 @@ def user_page():
 
             else:
                 showSleepHour = ""
+                if wake_ups is None: 
+                    wake_ups = 0 
+                if net_sleep_hours is None: 
+                    net_sleep_hours = 0 
                 if(net_sleep_hours < 60): 
                     showSleepHour = str(net_sleep_hours) + " minutes"
                 else: 
-                    showSleepHour = str(net_sleep_hours/60) + " Hours"
+                    showSleepHour = str(net_sleep_hours/60) + " hours"
                 
                 st.markdown(
                     """
