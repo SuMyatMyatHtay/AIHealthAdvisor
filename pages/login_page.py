@@ -7,7 +7,7 @@ import hashlib
 import re
 
 from mysql.connector import Error
-
+from time import sleep
 
 # Home Page Function
 def login_page():
@@ -124,11 +124,17 @@ def rundata():
         if st.button("Register"):
             if register_password != register_password_confirm:
                 st.error("Passwords do not match")
+            elif len(register_password) < 6:
+                st.error("Password must be at least 6 characters long")
             elif not is_password_strong(register_password):
                 st.error("Password must contain at least one letter, one number, and one special character")
         
             elif register_user(register_username, register_password):
                 st.success("Registration successful!")
+                sleep(3)
+                # st.session_state.selected_tab = "Login"
+                st.rerun() 
+                
             else:
                 st.error("Username already exists")
 
