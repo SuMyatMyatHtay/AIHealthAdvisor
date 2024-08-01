@@ -4,7 +4,10 @@ import mysql.connector
 import json
 import os
 import hashlib
+import re
+
 from mysql.connector import Error
+
 
 # Home Page Function
 def login_page():
@@ -87,6 +90,15 @@ def authenticate(username, password):
     except mysql.connector.Error as err:
         st.error(f"Error: {err}")
         return None
+    
+def is_password_strong(password):
+    """Check if the password is strong."""
+    if (re.search(r'[a-zA-Z]', password) and
+        re.search(r'\d', password) and
+        re.search(r'[!@#$%^&*(),.?":{}|<>]', password)):
+        return True
+    return False
+
 
 def rundata(): 
     tabs = st.tabs(["Login", "Register"])
@@ -112,6 +124,9 @@ def rundata():
         if st.button("Register"):
             if register_password != register_password_confirm:
                 st.error("Passwords do not match")
+            elif not is_password_strong(register_password):
+                st.error("Password must contain at least one letter, one number, and one special character")
+        
             elif register_user(register_username, register_password):
                 st.success("Registration successful!")
             else:
