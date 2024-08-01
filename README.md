@@ -68,8 +68,11 @@ database="iot"
 2. Ur Nutrition Planner page is not working. Please Fix.
    ![alt text](image-1.png)
 
-3. Please Adjust ur page design. It is very hard to see. If you cannot make it dynamic for both light mode and dark mode, maybe you can try apply color for not just background but also the text itself.
+3. Please Adjust ur page design. It is very hard to see. If you cannot make it dynamic for both light mode and dark mode, maybe you can try apply color for not just background but also the text itself. (FIXED!)
    ![alt text](image-2.png)
 
 4. Don't forget to adjust color for the Nutrition Tracker also yeah.
    ![alt text](image-3.png)
+
+5. Help me make sure that the user cannot change their username yeah. Else it will have a conflict with sleep optimization. If you want to let the user change the name, create a new column as display_name and change the necessary parts.
+   ![alt text](image-4.png)
