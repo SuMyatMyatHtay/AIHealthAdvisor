@@ -147,6 +147,9 @@ def select_meal(meal_options, target_calories):
     return meal_options
 
 def nutrition_planner_page():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     st.title("Nutrition Planner")
     st.markdown("### Today's Meal Plan")
 

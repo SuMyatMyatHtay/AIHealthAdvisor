@@ -121,7 +121,9 @@ def get_sleep_data(user_id):
 
 # User Page Function
 def user_page():
-    
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     st.markdown("""
     <style>
         .title {

@@ -26,6 +26,7 @@ temp_data_path = os.path.join(parent_directory, 'tempData.json')
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+
 def save_user_id(user_id, username):
     jsontempData = {
         "user_id": user_id,
@@ -41,6 +42,7 @@ def load_user_id():
             data = json.load(f)
             return data.get("user_id")
     return None
+
 
 def delete_user_id():
     if os.path.exists(temp_data_path):

@@ -47,6 +47,17 @@ def get_user_details(user_id):
         else:
             return None
 
+
+def user_exists_in_db(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT user_id FROM userinfo WHERE user_id = %s', (user_id,))
+        result = cursor.fetchone()
+        conn.close()
+        return result is not None
+    return False
+
 def calculate_bmr(gender, weight, height, age):
     weight = float(weight)
     height = float(height)
@@ -112,8 +123,17 @@ def show_expander(meal_type):
                 st.error("Please provide both meal name and calories.")
 
 def nutrition_tracker_page():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
+    
     st.title("Nutrition Tracker")
     user_id = load_user_id()
+
+    if not user_exists_in_db(user_id): 
+        st.error("User information not found. Please complete your profile.")
+        return
+    
     if user_id:
         st.markdown(
             """

@@ -40,26 +40,32 @@ def calculate_age(birthdate):
     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
     return age
 
-def store_user_details(user_id, gender, birthdate, height, goal, weight):
+def store_user_details(user_id, gender, birthdate, height, goal, weight, sleep_goal_hour):
     age = calculate_age(birthdate)
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
         cursor.execute('''
-        INSERT INTO userinfo (user_id, gender, age, birthdate, height, goal, weight) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO userinfo (user_id, gender, age, birthdate, height, goal, weight, sleep_goal_hour) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ON DUPLICATE KEY UPDATE
             gender = VALUES(gender),
             age = VALUES(age),
             birthdate = VALUES(birthdate),
             height = VALUES(height),
             goal = VALUES(goal),
-            weight = VALUES(weight)
-        ''', (user_id, gender, age, birthdate, height, goal, weight))
+            weight = VALUES(weight),
+            sleep_goal_hour = VALUES(sleep_goal_hour)           
+        ''', (user_id, gender, age, birthdate, height, goal, weight, sleep_goal_hour))
         conn.commit()
         conn.close()
 
 def userinfo_form():
+    # Check if tempData.json exists
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
+    
     st.title("User Information Form")
     user_id = load_user_id()  # Load user ID from JSON file
 
@@ -70,12 +76,13 @@ def userinfo_form():
             height = st.number_input("Height (cm)", min_value=0)
             goal = st.selectbox("Goal", ["Weight Loss", "Weight Gain", "Maintain Weight"])
             weight = st.number_input("Weight (kg)", min_value=0)
-            
+            sleep_goal_hour = st.number_input("Sleep Goal (hours)", min_value=1, max_value=12)
             submit_button = st.form_submit_button("Submit")
             
             if submit_button:
-                store_user_details(user_id, gender, birthdate.strftime('%Y-%m-%d'), height, goal, weight)
+                store_user_details(user_id, gender, birthdate.strftime('%Y-%m-%d'), height, goal, weight, sleep_goal_hour)
                 st.success("User details saved successfully!")
+                st.rerun()
     else:
         st.error("User ID not found. Please make sure you are logged in.")
 

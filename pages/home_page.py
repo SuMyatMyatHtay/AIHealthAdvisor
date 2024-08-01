@@ -98,6 +98,9 @@ def create_card(title, content, background_color):
 
 # Home Page Function
 def home_page():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     st.title("Home Page")
     st.write("Welcome to the main page!")
 

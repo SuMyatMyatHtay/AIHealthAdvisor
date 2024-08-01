@@ -36,6 +36,15 @@ def create_connection():
     except Error as e:
         st.write(f"Error: {e}")
         return None
+def user_exists_in_db(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT user_id FROM userinfo WHERE user_id = %s', (user_id,))
+        result = cursor.fetchone()
+        conn.close()
+        return result is not None
+    return False
 
 def get_calories_last_seven_days(user_id):
     conn = create_connection()
@@ -125,8 +134,15 @@ def calculate_bmr(gender, weight, height, age):
     return bmr
 
 def statistics():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     st.title("User Statistics")
+
     user_id = load_user_id()
+    if not user_exists_in_db(user_id): 
+        st.error("User information not found. Please complete your profile.")
+        return
     
     if user_id:
         # Extract caloric intake data
