@@ -155,7 +155,7 @@ def sleep_page():
                         st.session_state.test_process = start_subprocess()
                         start_sleep_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-                if st.session_state.test_process is not None and is_sleeping == True:
+                if st.session_state.test_process is not None:
                     if st.button("Wake Up"):
                         print("Wake Up Button")
                         is_sleeping = False
