@@ -58,14 +58,14 @@ def get_user_name(user_id):
         conn.close()
         return user_name[0] if user_name else None
 
-def update_user_details(user_id, name, age, gender, weight, height, birthdate):
+def update_user_details(user_id, age, gender, weight, height, birthdate):
     conn = create_connection()
     if conn:
         cursor = conn.cursor()
         # Update the user name in the users table
-        cursor.execute('''UPDATE users SET username = %s WHERE id = %s;''', (name, user_id))
+        #cursor.execute('''UPDATE users SET username = %s WHERE id = %s;''', (name, user_id))
         # Update other details in the userinfo table
-        cursor.execute('''UPDATE userinfo SET age = %s, gender = %s, weight = %s, height = %s, birthdate = %s WHERE id = %s;''',
+        cursor.execute('''UPDATE userinfo SET age = %s, gender = %s, weight = %s, height = %s, birthdate = %s WHERE user_id = %s;''',
                        (age, gender, weight, height, birthdate, user_id))
         conn.commit()
         cursor.close()
@@ -165,7 +165,7 @@ def user_page():
         if user_data and user_name:
             # Edit mode logic
             if st.session_state.edit_mode:
-                st.text_input("Name", user_name, key='name')
+                #st.text_input("Name", user_name, key='name')
                 st.date_input("Birthdate", value=datetime.strptime(user_data[2], '%Y-%m-%d'), key='birthdate')
                 st.selectbox("Gender", ["Male", "Female"], index=["Male", "Female"].index(user_data[0]), key='gender')
                 st.number_input("Weight (kg)", value=float(user_data[4]), key='weight')
@@ -175,7 +175,7 @@ def user_page():
                 col1, col2 = st.columns([1, 1])
                 with col1:
                     if st.button("Save Changes"):
-                        name = st.session_state.name
+                        #name = st.session_state.name
                         birthdate = st.session_state.birthdate
                         gender = st.session_state.gender
                         weight = st.session_state.weight
@@ -184,7 +184,7 @@ def user_page():
                         # Calculate age from birthdate
                         age = calculate_age(birthdate.strftime('%Y-%m-%d'))
 
-                        update_user_details(user_id, name, age, gender, weight, height, birthdate.strftime('%Y-%m-%d'))
+                        update_user_details(user_id, age, gender, weight, height, birthdate.strftime('%Y-%m-%d'))
                         st.success("Details updated successfully")
                         st.session_state.edit_mode = False
                         st.rerun()
