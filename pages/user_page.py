@@ -242,6 +242,10 @@ def user_page():
                             <td>{user_name}</td>
                         </tr>
                         <tr>
+                            <td><strong>Birthdate</strong></td>
+                            <td>{user_data[2]}</td>
+                        </tr>
+                        <tr>
                             <td><strong>Age</strong></td>
                             <td>{user_data[1]}</td>
                         </tr>
