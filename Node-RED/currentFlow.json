@@ -19,8 +19,8 @@
         "winHide": false,
         "oldrc": false,
         "name": "Run Detector",
-        "x": 330,
-        "y": 240,
+        "x": 350,
+        "y": 280,
         "wires": [
             [
                 "6c914cf06511c4f4",
@@ -127,7 +127,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 700,
-        "y": 220,
+        "y": 300,
         "wires": []
     },
     {
@@ -142,8 +142,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 530,
-        "y": 300,
+        "x": 510,
+        "y": 360,
         "wires": [
             [
                 "634d9b566f437a5a"
@@ -181,7 +181,7 @@
         "z": "e49c89f948ae1d6a",
         "mydb": "2453f6a8c0a6977a",
         "name": "MySQL Database Configuration",
-        "x": 1990,
+        "x": 1970,
         "y": 640,
         "wires": [
             []
@@ -346,8 +346,8 @@
         "tls": true,
         "name": "summh11@gmail.com",
         "dname": "email humidity alert",
-        "x": 2170,
-        "y": 480,
+        "x": 2250,
+        "y": 720,
         "wires": []
     },
     {
@@ -712,8 +712,8 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 880,
-        "y": 160,
+        "x": 860,
+        "y": 240,
         "wires": [
             [
                 "26dbaadaafe7961e"
@@ -833,23 +833,6 @@
         ]
     },
     {
-        "id": "e425991e58cb2d3d",
-        "type": "e-mail",
-        "z": "e49c89f948ae1d6a",
-        "server": "smtp.gmail.com",
-        "port": "465",
-        "authtype": "BASIC",
-        "saslformat": true,
-        "token": "oauth2Response.access_token",
-        "secure": true,
-        "tls": true,
-        "name": "summh11@gmail.com",
-        "dname": "send email reminder",
-        "x": 660,
-        "y": 700,
-        "wires": []
-    },
-    {
         "id": "173e83090eca1f6b",
         "type": "function",
         "z": "e49c89f948ae1d6a",
@@ -861,8 +844,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 430,
-        "y": 600,
+        "x": 810,
+        "y": 780,
         "wires": [
             [
                 "e425991e58cb2d3d"
@@ -893,7 +876,7 @@
         "seg2": "75",
         "diff": false,
         "className": "",
-        "x": 820,
+        "x": 840,
         "y": 40,
         "wires": []
     },
@@ -909,12 +892,13 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 310,
+        "x": 330,
         "y": 40,
         "wires": [
             [
                 "715116acbbe0fe2e",
-                "eee948cfa1a352cb"
+                "eee948cfa1a352cb",
+                "efdd76f5b1985129"
             ]
         ]
     },
@@ -935,8 +919,8 @@
         "font": "",
         "fontSize": 16,
         "color": "#000000",
-        "x": 590,
-        "y": 120,
+        "x": 770,
+        "y": 100,
         "wires": []
     },
     {
@@ -951,7 +935,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 570,
+        "x": 590,
         "y": 40,
         "wires": [
             [
@@ -973,8 +957,91 @@
         "phonenumberinputtypemessage": "msg",
         "inputtypemessage": "str",
         "rejectssl": false,
-        "x": 390,
-        "y": 700,
+        "x": 550,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e425991e58cb2d3d",
+        "type": "e-mail",
+        "z": "e49c89f948ae1d6a",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "authtype": "BASIC",
+        "saslformat": true,
+        "token": "oauth2Response.access_token",
+        "secure": true,
+        "tls": true,
+        "name": "summh11@gmail.com",
+        "dname": "send exercise reminder",
+        "x": 1390,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "dbef910c7933c675",
+        "type": "http in",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "url": "/steps",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 440,
+        "wires": [
+            [
+                "e04eb5b3e95595bd"
+            ]
+        ]
+    },
+    {
+        "id": "e04eb5b3e95595bd",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Format Response",
+        "func": "msg.payload = global.get('step_count') || 0;\nmsg.payload = {steps: msg.payload};\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 190,
+        "y": 600,
+        "wires": [
+            [
+                "f94df2ee39b6b27f"
+            ]
+        ]
+    },
+    {
+        "id": "f94df2ee39b6b27f",
+        "type": "http response",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 170,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "efdd76f5b1985129",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Update Step Count",
+        "func": "global.set('step_count', msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 160,
         "wires": [
             []
         ]

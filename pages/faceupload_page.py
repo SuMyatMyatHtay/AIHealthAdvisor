@@ -49,6 +49,10 @@ def insert_sleep_data(connection, user_id, status):
 
 # Home Page Function
 def faceupload_page():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
+    
     st.title("Face Upload Page")
     st.write("Please upload your photos to update your profile.")
 

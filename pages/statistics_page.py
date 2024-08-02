@@ -36,6 +36,15 @@ def create_connection():
     except Error as e:
         st.write(f"Error: {e}")
         return None
+def user_exists_in_db(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT user_id FROM userinfo WHERE user_id = %s', (user_id,))
+        result = cursor.fetchone()
+        conn.close()
+        return result is not None
+    return False
 
 def get_calories_last_seven_days(user_id):
     conn = create_connection()
@@ -96,6 +105,7 @@ def get_sleep_duration_last_seven_days(user_id):
         return final_result
     return []
 
+
 def get_user_details(user_id):
     conn = create_connection()
     if conn:
@@ -124,8 +134,15 @@ def calculate_bmr(gender, weight, height, age):
     return bmr
 
 def statistics():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     st.title("User Statistics")
+
     user_id = load_user_id()
+    if not user_exists_in_db(user_id): 
+        st.error("User information not found. Please complete your profile.")
+        return
     
     if user_id:
         # Extract caloric intake data
@@ -134,13 +151,21 @@ def statistics():
         # Extract sleep duration data
         sleep_result = get_sleep_duration_last_seven_days(user_id)
         
+        
         # Convert Decimals to floats and handle date formatting for calories
         calories_dates = [x[0] for x in calories_result]
         calories_values = [float(x[1]) if isinstance(x[1], decimal.Decimal) else float(x[1]) for x in calories_result]
 
         # Convert Decimals to floats and handle date formatting for sleep
         sleep_dates = [x[0] for x in sleep_result]
-        sleep_values = [float(x[1]) if isinstance(x[1], decimal.Decimal) else float(x[1]) for x in sleep_result]
+        sleep_values = [float(x[1]) for x in sleep_result]
+
+        # Check if any value is greater than or equal to 90
+        if max(sleep_values) >= 90:
+            sleep_values = [value / 60 for value in sleep_values]
+            yaxis_title = 'Hours'
+        else:
+            yaxis_title = 'Minutes'
 
         # Create DataFrame for calories
         calories_data = pd.DataFrame({
@@ -196,13 +221,14 @@ def statistics():
             sleep_fig = go.Figure()
 
             # Add sleep duration trace
-            sleep_fig.add_trace(go.Scatter(x=sleep_data['Date'], y=sleep_data['Value'], mode='lines+markers', name='Sleep Duration'))
+            sleep_fig.add_trace(go.Scatter(x=sleep_dates, y=sleep_values, mode='lines+markers', name='Sleep Duration'))
+
 
             # Update layout with custom width, height, and y-axis minimum value
             sleep_fig.update_layout(
                 title='Sleep Duration: Last 7 Days',
                 xaxis_title='Date',
-                yaxis_title='Minutes',
+                yaxis_title=yaxis_title,
                 yaxis=dict(range=[0, None]),  
                 width=800,  
                 height=400  

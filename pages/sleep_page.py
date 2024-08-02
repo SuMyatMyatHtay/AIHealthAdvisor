@@ -50,6 +50,30 @@ def get_db_connection():
     )
     return connection
 
+def create_connection():
+    try:
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            passwd="",  
+            database="iot"
+        )
+        if conn.is_connected():
+            return conn
+    except Error as e:
+        st.write(f"Error: {e}")
+        return None
+
+def user_exists_in_db(user_id):
+    conn = create_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('SELECT user_id FROM userinfo WHERE user_id = %s', (user_id,))
+        result = cursor.fetchone()
+        conn.close()
+        return result is not None
+    return False
+
 def insert_sleep_data(user_id, facedetect_duration, sleep_duration):
     print("Insert Sleep Data")
     if sleep_duration < 1 and facedetect_duration < 1:
@@ -75,11 +99,13 @@ def insert_sleep_data(user_id, facedetect_duration, sleep_duration):
             conn.close()
 
 def sleep_page():
+    if not os.path.exists(temp_data_path):
+        st.error("User not logged in. Redirect to the first app page for login.")
+        return
     global start_sleep_time, end_sleep_time, sleep_duration, facedetect_duration, is_sleeping
 
     st.title("Sleep Page")
-    st.write("Welcome to the sleep optimization page!")
-
+    
     try:
         with open(temp_data_path, 'r') as file:
             data = json.load(file)
@@ -100,6 +126,12 @@ def sleep_page():
         st.error("No username found in tempData.json.")
         return
 
+    if not user_exists_in_db(user_id): 
+        st.error("User information not found. Please complete your profile.")
+        return
+    
+    st.write("Welcome to the sleep optimization page! The camera will be opened once you decided to sleep and it will be closed once you wake up.")
+
     try:
         connection = get_db_connection()
         if connection.is_connected():
@@ -110,7 +142,7 @@ def sleep_page():
             result = cursor.fetchone()
 
             if result[0]:
-                st.success(f"user_id {user_id} exists in the sleep table.")
+                # st.success(f"user_id {user_id} exists in the sleep table.")
 
                 if 'test_process' not in st.session_state:
                     st.session_state.test_process = None
@@ -139,7 +171,7 @@ def sleep_page():
                             st.session_state.test_process = None
 
             else:
-                st.warning(f"user_id {user_id} does not exist in the faceregister table.")
+                st.warning(f"username: {username} face is not registered yet to use this sleep optimization function.")
                 faceupload.faceupload_page()
 
     except Error as e:

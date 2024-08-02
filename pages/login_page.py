@@ -4,7 +4,10 @@ import mysql.connector
 import json
 import os
 import hashlib
+import re
+
 from mysql.connector import Error
+from time import sleep
 
 # Home Page Function
 def login_page():
@@ -23,6 +26,7 @@ temp_data_path = os.path.join(parent_directory, 'tempData.json')
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+
 def save_user_id(user_id, username):
     jsontempData = {
         "user_id": user_id,
@@ -38,6 +42,7 @@ def load_user_id():
             data = json.load(f)
             return data.get("user_id")
     return None
+
 
 def delete_user_id():
     if os.path.exists(temp_data_path):
@@ -87,6 +92,15 @@ def authenticate(username, password):
     except mysql.connector.Error as err:
         st.error(f"Error: {err}")
         return None
+    
+def is_password_strong(password):
+    """Check if the password is strong."""
+    if (re.search(r'[a-zA-Z]', password) and
+        re.search(r'\d', password) and
+        re.search(r'[!@#$%^&*(),.?":{}|<>]', password)):
+        return True
+    return False
+
 
 def rundata(): 
     tabs = st.tabs(["Login", "Register"])
@@ -112,8 +126,17 @@ def rundata():
         if st.button("Register"):
             if register_password != register_password_confirm:
                 st.error("Passwords do not match")
+            elif len(register_password) < 6:
+                st.error("Password must be at least 6 characters long")
+            elif not is_password_strong(register_password):
+                st.error("Password must contain at least one letter, one number, and one special character")
+        
             elif register_user(register_username, register_password):
                 st.success("Registration successful!")
+                sleep(3)
+                # st.session_state.selected_tab = "Login"
+                st.rerun() 
+                
             else:
                 st.error("Username already exists")
 
