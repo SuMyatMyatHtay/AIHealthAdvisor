@@ -54,7 +54,7 @@ def user_exists_in_db(user_id):
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Home", "Sleep Optimization", "Nutrition Planner","Nutrition Tracker", "User Page", "Statistics Page", "Exercises Page"])
+    page = st.sidebar.radio("Go to", ["Home", "Sleep Optimization", "Nutrition Planner","Nutrition Tracker", "Statistics Page", "Exercises Page", "User Page"])
 
     if page == "Home":
         home.home_page()
