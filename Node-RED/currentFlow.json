@@ -20,7 +20,7 @@
         "oldrc": false,
         "name": "Run Detector",
         "x": 350,
-        "y": 280,
+        "y": 260,
         "wires": [
             [
                 "6c914cf06511c4f4",
@@ -79,7 +79,7 @@
             },
             {
                 "t": "eq",
-                "v": "Nutrition Planner Page",
+                "v": "Correct User Face",
                 "vt": "str"
             },
             {
@@ -96,20 +96,21 @@
         "checkall": "true",
         "repair": false,
         "outputs": 5,
-        "x": 550,
-        "y": 480,
+        "x": 690,
+        "y": 460,
         "wires": [
             [
                 "1d11ce42bb5b2c2c",
                 "16d4b07c5751a244",
                 "3dba8cf5c73f9023",
-                "e428c430ca87c146",
                 "c44cdc5d06aceede"
             ],
             [
                 "c533e078689f4843"
             ],
-            [],
+            [
+                "e428c430ca87c146"
+            ],
             [],
             []
         ]
@@ -167,11 +168,12 @@
         "checkall": "true",
         "repair": false,
         "outputs": 1,
-        "x": 1140,
-        "y": 420,
+        "x": 1080,
+        "y": 400,
         "wires": [
             [
-                "b55b994a69b527db"
+                "b55b994a69b527db",
+                "769f0be38f0fa40d"
             ]
         ]
     },
@@ -199,8 +201,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1340,
-        "y": 520,
+        "x": 1280,
+        "y": 560,
         "wires": [
             [
                 "fd4500e458202d9b",
@@ -255,7 +257,7 @@
         "type": "function",
         "z": "e49c89f948ae1d6a",
         "name": "draft email",
-        "func": "msg.topic = \"Face Detected\";\nmsg.payload = \"This is Su. Heehee\";\nreturn msg;",
+        "func": "msg.topic = \"Face Detected. Using Mobile Phone during Bedtime is not healthy\";\nmsg.payload = \"Dear User, we have detected ur face. Please do not use mobile phone during your sleep time. Hope u have a wonderful bed time. Good Night!\";\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -292,7 +294,8 @@
         "y": 400,
         "wires": [
             [
-                "0a7c4b4b31afd9f9"
+                "0a7c4b4b31afd9f9",
+                "ab45d43b782b58bd"
             ]
         ]
     },
@@ -691,7 +694,7 @@
                 "tot": "bool"
             }
         ],
-        "x": 910,
+        "x": 970,
         "y": 600,
         "wires": [
             []
@@ -734,7 +737,7 @@
                 "tot": "bool"
             }
         ],
-        "x": 910,
+        "x": 970,
         "y": 660,
         "wires": [
             []
@@ -782,8 +785,8 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 940,
-        "y": 540,
+        "x": 900,
+        "y": 520,
         "wires": []
     },
     {
@@ -806,7 +809,7 @@
         "id": "278a9149172797d5",
         "type": "inject",
         "z": "e49c89f948ae1d6a",
-        "name": "everyday at 12pm",
+        "name": "everyday at 11:40am",
         "props": [
             {
                 "p": "payload"
@@ -817,18 +820,17 @@
             }
         ],
         "repeat": "",
-        "crontab": "00 12 * * *",
+        "crontab": "40 11 * * *",
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 150,
+        "x": 160,
         "y": 340,
         "wires": [
             [
-                "f098f5e066b05245",
-                "173e83090eca1f6b"
+                "13e289be2251d67a"
             ]
         ]
     },
@@ -957,8 +959,8 @@
         "phonenumberinputtypemessage": "msg",
         "inputtypemessage": "str",
         "rejectssl": false,
-        "x": 550,
-        "y": 780,
+        "x": 490,
+        "y": 800,
         "wires": [
             []
         ]
@@ -990,7 +992,7 @@
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
-        "y": 440,
+        "y": 580,
         "wires": [
             [
                 "e04eb5b3e95595bd"
@@ -1009,8 +1011,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 190,
-        "y": 600,
+        "x": 150,
+        "y": 740,
         "wires": [
             [
                 "f94df2ee39b6b27f"
@@ -1025,7 +1027,7 @@
         "statusCode": "",
         "headers": {},
         "x": 170,
-        "y": 800,
+        "y": 940,
         "wires": []
     },
     {
@@ -1045,6 +1047,169 @@
         "wires": [
             []
         ]
+    },
+    {
+        "id": "ce3a25b9eb9b87dd",
+        "type": "switch",
+        "z": "e49c89f948ae1d6a",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "ALARM ON",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 610,
+        "y": 640,
+        "wires": [
+            [
+                "173e83090eca1f6b",
+                "f098f5e066b05245",
+                "d0ed9435f2dbc0f3"
+            ]
+        ]
+    },
+    {
+        "id": "506a15969bfef95b",
+        "type": "serial out",
+        "z": "e49c89f948ae1d6a",
+        "name": "Arduino",
+        "serial": "s1",
+        "x": 760,
+        "y": 1000,
+        "wires": []
+    },
+    {
+        "id": "99832644bad5f083",
+        "type": "ui_button",
+        "z": "e49c89f948ae1d6a",
+        "name": "Buzzer Off",
+        "group": "c8bdb824d6c60a7d",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Turn Buzzer Off",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "str",
+        "topic": "",
+        "topicType": "str",
+        "x": 470,
+        "y": 900,
+        "wires": [
+            [
+                "506a15969bfef95b"
+            ]
+        ]
+    },
+    {
+        "id": "d0ed9435f2dbc0f3",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "function 4",
+        "func": "msg.payload = 1\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 840,
+        "wires": [
+            [
+                "506a15969bfef95b"
+            ]
+        ]
+    },
+    {
+        "id": "e9ba127c402cd586",
+        "type": "function",
+        "z": "e49c89f948ae1d6a",
+        "name": "Trim Output",
+        "func": "msg.payload = msg.payload.trim();\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 540,
+        "wires": [
+            [
+                "ce3a25b9eb9b87dd"
+            ]
+        ]
+    },
+    {
+        "id": "13e289be2251d67a",
+        "type": "exec",
+        "z": "e49c89f948ae1d6a",
+        "command": "python -u C:\\python\\AIHealthAdvisor\\timecheck.py",
+        "addpay": "",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "Run Detector",
+        "x": 370,
+        "y": 440,
+        "wires": [
+            [
+                "e9ba127c402cd586"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "ab45d43b782b58bd",
+        "type": "node-red-contrib-whatsapp-cmb-send-message",
+        "z": "e49c89f948ae1d6a",
+        "name": "exercise reminder",
+        "credtype": "account",
+        "account": "99763ca5c257de6a",
+        "text": "Dear User, we have detected ur face. Please do not use mobile phone during your sleep time. Hope u have a wonderful bed time. Good Night!",
+        "phonenumbervalue": "",
+        "apikeyvalue": "",
+        "apikeyinputtypemessage": "msg",
+        "phonenumberinputtypemessage": "msg",
+        "inputtypemessage": "str",
+        "rejectssl": false,
+        "x": 2190,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "769f0be38f0fa40d",
+        "type": "debug",
+        "z": "e49c89f948ae1d6a",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 500,
+        "wires": []
     },
     {
         "id": "2453f6a8c0a6977a",
@@ -1095,9 +1260,25 @@
         "name": "U_N0t_N1c3"
     },
     {
+        "id": "s1",
+        "type": "serial-port",
+        "name": "",
+        "serialport": "COM7",
+        "serialbaud": "9600",
+        "databits": "8",
+        "parity": "none",
+        "stopbits": "1",
+        "waitfor": "",
+        "newline": "",
+        "bin": "false",
+        "out": "char",
+        "addchar": "false",
+        "responsetimeout": ""
+    },
+    {
         "id": "0216b1ccfb4c1339",
         "type": "ui_tab",
-        "name": "Home",
+        "name": "Home1",
         "icon": "dashboard",
         "disabled": false,
         "hidden": false
